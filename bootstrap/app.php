@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'can.module' => \App\Http\Middleware\EnsureCanAccessModule::class,
             'has.level' => \App\Http\Middleware\EnsureHasAccessLevel::class,
         ]);
+
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckMaintenanceMode::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
