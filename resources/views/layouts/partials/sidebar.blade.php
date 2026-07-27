@@ -5,7 +5,7 @@
     $customersOpen = request()->routeIs('admin.customers.*');
     $authorizationsOpen = request()->routeIs('admin.authorizations.*');
     $providersOpen = request()->routeIs('admin.sources.*', 'admin.companies.*');
-    $loadingsOpen = request()->routeIs('admin.loadings.*', 'admin.cars.*');
+    $loadingsOpen = request()->routeIs('admin.loadings.*', 'admin.cars.*', 'admin.car-owners.*', 'admin.car-drivers.*');
     $t1Open = request()->routeIs('admin.loading-t1s.*') || (request()->routeIs('admin.loadings.index') && request('activeTab') === 'without_t1');
     $invoicesOpen = request()->routeIs('admin.mandataire-balances.*', 'admin.invoices.*', 'admin.invoice-labels.*', 'admin.accounting-invoices.*', 'admin.accounting-invoice-labels.*', 'admin.accounting-invoice-field-regulars.*');
     $usersOpen = request()->routeIs('admin.users.*', 'admin.groups.*', 'admin.perms.*');
@@ -175,6 +175,18 @@
                             <a href="{{ route('admin.cars.index') }}" class="waves-effect waves-dark">
                                 <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
                                 <span class="pcoded-mtext">Liste des véhicules</span>
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.car-owners.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.car-owners.index') }}" class="waves-effect waves-dark">
+                                <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
+                                <span class="pcoded-mtext">Transporteurs</span>
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.car-drivers.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.car-drivers.index') }}" class="waves-effect waves-dark">
+                                <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
+                                <span class="pcoded-mtext">Chauffeurs</span>
                             </a>
                         </li>
                     </ul>

@@ -135,8 +135,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/cars/{car}', [CarController::class, 'update'])->name('cars.update');
         Route::delete('/cars/{car}', [CarController::class, 'destroy'])->name('cars.destroy');
 
+        Route::get('/car-owners', [CarOwnerController::class, 'index'])->name('car-owners.index');
+        Route::get('/car-owners/data', [CarOwnerController::class, 'data'])->name('car-owners.data');
         Route::post('/car-owners', [CarOwnerController::class, 'store'])->name('car-owners.store');
+        Route::put('/car-owners/{carOwner}', [CarOwnerController::class, 'update'])->name('car-owners.update');
+        Route::delete('/car-owners/{carOwner}', [CarOwnerController::class, 'destroy'])->name('car-owners.destroy');
+
+        Route::get('/car-drivers', [CarDriverController::class, 'index'])->name('car-drivers.index');
+        Route::get('/car-drivers/data', [CarDriverController::class, 'data'])->name('car-drivers.data');
         Route::post('/car-drivers', [CarDriverController::class, 'store'])->name('car-drivers.store');
+        Route::put('/car-drivers/{carDriver}', [CarDriverController::class, 'update'])->name('car-drivers.update');
+        Route::delete('/car-drivers/{carDriver}', [CarDriverController::class, 'destroy'])->name('car-drivers.destroy');
     });
 
     Route::middleware('can.module:Chargement,Contrôle,Superivision')->group(function () {
