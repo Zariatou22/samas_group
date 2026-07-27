@@ -14,7 +14,6 @@
 <nav class="pcoded-navbar">
     <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
     <div class="pcoded-inner-navbar main-menu">
-        <div class="pcoded-navigatio-lavel">Interface</div>
         <ul class="pcoded-item pcoded-left-item">
             <li class="{{ request()->routeIs('admin.home') ? 'active' : '' }}">
                 <a href="{{ route('admin.home') }}" class="waves-effect waves-dark">
@@ -30,7 +29,7 @@
             </li>
         </ul>
 
-        @if ($user?->canAccessModule(['Saisie', 'Contrôle', 'Superivision']))
+        @if ($user?->canAccessModule())
             <ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu {{ $containersOpen ? 'sidebar-open active' : '' }}">
                     <a href="#!" class="waves-effect waves-dark">
@@ -150,7 +149,7 @@
             </ul>
         @endif
 
-        @if ($user?->canAccessModule(['Chargement', 'Superivision']))
+        @if ($user?->canAccessModule())
             <ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu {{ $loadingsOpen ? 'sidebar-open active' : '' }}">
                     <a href="#!" class="waves-effect waves-dark">
@@ -222,7 +221,7 @@
             </ul>
         @endif
 
-        @if ($user?->canAccessModule(['Compatibilité']))
+        @if ($user?->canAccessModule())
             <ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu {{ $invoicesOpen ? 'sidebar-open active' : '' }}">
                     <a href="#!" class="waves-effect waves-dark">

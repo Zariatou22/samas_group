@@ -22,7 +22,7 @@ class HomeController extends Controller
             [
                 'title' => 'Gestion des B/L',
                 'color' => 'primary',
-                'visible' => $user?->canAccessModule(['Saisie', 'Contrôle', 'Superivision']) ?? false,
+                'visible' => $user?->canAccessModule() ?? false,
                 'cards' => [
                     ['label' => 'Tous les BLS', 'icon' => 'fa-file-text-o', 'url' => route('admin.bls.index', ['activeTab' => 'all'])],
                     ['label' => "En attente d'arrivée", 'icon' => 'fa-clock-o', 'url' => route('admin.bls.index', ['activeTab' => 'waiting'])],
@@ -33,7 +33,7 @@ class HomeController extends Controller
             [
                 'title' => 'Déclarations, chargements & T1',
                 'color' => 'info',
-                'visible' => $user?->canAccessModule(['Saisie', 'Contrôle', 'Superivision', 'Chargement']) ?? false,
+                'visible' => $user?->canAccessModule() ?? false,
                 'cards' => [
                     ['label' => 'Déclarations en cours', 'icon' => 'fa-clipboard', 'url' => route('admin.authorizations.index', ['activeTab' => 'ongoing'])],
                     ['label' => 'Déclarations soldées', 'icon' => 'fa-check-square-o', 'url' => route('admin.authorizations.index', ['activeTab' => 'settled'])],
@@ -44,7 +44,7 @@ class HomeController extends Controller
             [
                 'title' => 'Suivi & contrôles',
                 'color' => 'warning',
-                'visible' => $user?->canAccessModule(['Saisie', 'Contrôle', 'Superivision', 'Chargement']) ?? false,
+                'visible' => $user?->canAccessModule() ?? false,
                 'cards' => [
                     ['label' => 'Franchises', 'icon' => 'fa-truck', 'url' => route('admin.container-tracking.index')],
                     ['label' => "En attente d'opération", 'icon' => 'fa-file', 'url' => route('admin.bls.index', ['activeTab' => 'arrived'])],
@@ -54,7 +54,7 @@ class HomeController extends Controller
             [
                 'title' => 'Comptabilité',
                 'color' => 'success',
-                'visible' => $user?->canAccessModule(['Compatibilité']) ?? false,
+                'visible' => $user?->canAccessModule() ?? false,
                 'cards' => [
                     ['label' => 'Factures prestataires', 'icon' => 'fa-file-text', 'url' => route('admin.mandataire-balances.index')],
                     ['label' => 'Factures clients', 'icon' => 'fa-usd', 'url' => route('admin.accounting-invoices.index')],

@@ -85,26 +85,6 @@ class User extends Authenticatable
         return $this->allPermissions()->contains($permName);
     }
 
-    /**
-     * Les permissions "éditoriales" sont hiérarchiques dans l'app d'origine :
-     * Administration > Edition > Modération > Rédaction. Avoir un niveau
-     * donne accès à tout ce qui est en dessous (ex: un Editeur a aussi
-     * accès à ce qui nécessite seulement "Rédaction").
-     */
-    public function hasAccessLevel(string $minimumPermission): bool
-    {
-        $hierarchy = ['Rédaction', 'Modération', 'Edition', 'Administration'];
-        $index = array_search($minimumPermission, $hierarchy, true);
-
-        if ($index === false) {
-            return $this->hasPermission($minimumPermission);
-        }
-
-        $accepted = array_slice($hierarchy, $index);
-
-        return $this->allPermissions()->intersect($accepted)->isNotEmpty();
-    }
-
     public function hasGroup(string|array $groupName): bool
     {
         $names = (array) $groupName;
@@ -113,18 +93,129 @@ class User extends Authenticatable
     }
 
     /**
-     * Accès à un module métier : soit via la hiérarchie éditoriale (à partir
-     * de "Rédaction" — Administration y a donc toujours accès), soit via une
-     * des permissions opérationnelles propres à ce module (Chargement,
-     * Saisie, Compatibilité, etc.).
+     * Reproduit fidèlement la cascade de rôles de Control.php (app CI
+     * d'origine) : chaque rôle est vérifié par permission nommée OU
+     * appartenance à un groupe homonyme, avec repli en cascade vers un rôle
+     * parent — repli qui diffère d'un rôle à l'autre (ce n'est PAS une
+     * simple hiérarchie linéaire : "Direction" et "Modération" sont deux
+     * branches parallèles qui replient toutes deux sur "Edition", pas l'une
+     * sur l'autre ; les rôles transverses (Douane, Shipping, Caisse, Kanis,
+     * Crossing, Dg transit, DRH, DACS, CA, BEN) répliquent chacun sur une
+     * cible différente).
      */
-    public function canAccessModule(array $operationalPerms = []): bool
+    public function isAdmin(): bool
     {
-        if ($this->hasAccessLevel('Rédaction')) {
-            return true;
-        }
+        return $this->hasPermission('Administration') || $this->hasGroup('Administrateur') || (int) $this->id === 1;
+    }
 
-        return $this->allPermissions()->intersect($operationalPerms)->isNotEmpty();
+    public function isEditeur(): bool
+    {
+        return $this->hasPermission('Edition') || $this->hasGroup('Editeur') || $this->isAdmin();
+    }
+
+    public function isDirecteur(): bool
+    {
+        return $this->hasPermission('Direction') || $this->hasGroup('Directeur') || $this->isEditeur();
+    }
+
+    public function isModerateur(): bool
+    {
+        return $this->hasPermission('Modération') || $this->hasGroup('Modérateur') || $this->isEditeur();
+    }
+
+    public function isRedacteur(): bool
+    {
+        return $this->hasPermission('Rédaction') || $this->hasGroup('Rédacteur') || $this->isModerateur();
+    }
+
+    public function isDrh(): bool
+    {
+        return $this->hasPermission('DRH') || $this->isRedacteur();
+    }
+
+    public function isDacs(): bool
+    {
+        return $this->hasPermission('DACS') || $this->isRedacteur();
+    }
+
+    public function isCa(): bool
+    {
+        return $this->hasPermission('CA') || $this->isRedacteur();
+    }
+
+    public function isBen(): bool
+    {
+        return $this->hasGroup('BEN') || $this->isRedacteur();
+    }
+
+    public function isDouane(): bool
+    {
+        return $this->hasPermission('Douane') || $this->hasGroup('Douane') || $this->isDgTransit();
+    }
+
+    public function isShipping(): bool
+    {
+        return $this->hasPermission('Shipping') || $this->hasGroup('Shipping') || $this->isDirecteur();
+    }
+
+    public function isCaisse(): bool
+    {
+        return $this->hasPermission('Caisse') || $this->hasGroup('Caisse') || $this->isEditeur();
+    }
+
+    public function isKanis(): bool
+    {
+        return $this->hasPermission('Kanis') || $this->hasGroup('Kanis') || $this->isDirecteur();
+    }
+
+    public function isCrossing(): bool
+    {
+        return $this->hasPermission('Crossing') || $this->hasGroup('Crossing') || $this->isDirecteur();
+    }
+
+    public function isDgTransit(): bool
+    {
+        return $this->hasPermission('Dg transit') || $this->hasGroup('Dg transit') || $this->isDirecteur();
+    }
+
+    /**
+     * Vérification générique par nom de service (permission ou groupe
+     * homonyme), avec repli sur "Editeur" — comme Control::is_allowed() en CI.
+     */
+    public function isAllowedTo(string $service): bool
+    {
+        return $this->hasPermission($service) || $this->hasGroup($service) || $this->isEditeur();
+    }
+
+    /**
+     * Niveaux éditoriaux utilisés pour restreindre certains écrans
+     * d'administration (gestion des utilisateurs, paramètres) à un niveau
+     * plus élevé que le simple accès métier — décision produit assumée pour
+     * la réécriture Laravel, l'app CI d'origine ne gate en réalité ces
+     * écrans qu'à "Rédaction" comme tout le reste.
+     */
+    public function hasAccessLevel(string $level): bool
+    {
+        return match ($level) {
+            'Rédaction' => $this->isRedacteur(),
+            'Modération' => $this->isModerateur(),
+            'Direction' => $this->isDirecteur(),
+            'Edition' => $this->isEditeur(),
+            'Administration' => $this->isAdmin(),
+            default => $this->hasPermission($level),
+        };
+    }
+
+    /**
+     * Accès aux modules métier (BL, clients, chargements, factures...) :
+     * gate unique sur "Rédaction", comme
+     * `if (! $this->control->is_redacteur()) redirect();` dans chaque
+     * contrôleur métier de l'app CI d'origine (il n'existe pas de
+     * permission par module distincte type "Saisie"/"Chargement" côté CI).
+     */
+    public function canAccessModule(): bool
+    {
+        return $this->isRedacteur();
     }
 
     public function isAdministrator(): bool

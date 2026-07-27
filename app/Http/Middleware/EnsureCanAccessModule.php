@@ -8,14 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Miroir du `if (! $this->control->is_redacteur()) redirect();` de chaque
- * contrôleur de l'ancienne appli CodeIgniter — réutilise directement
- * App\Models\User::canAccessModule() (déjà écrit pour Filament).
+ * contrôleur métier de l'ancienne appli CodeIgniter.
  */
 class EnsureCanAccessModule
 {
-    public function handle(Request $request, Closure $next, string ...$perms): Response
+    public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->canAccessModule($perms)) {
+        if (! $request->user()?->canAccessModule()) {
             abort(403);
         }
 

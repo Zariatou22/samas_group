@@ -38,7 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard/containers-per-month', [DashboardController::class, 'containersPerMonth'])->name('dashboard.containers-per-month');
     Route::get('/dashboard/week-arrivals', [DashboardController::class, 'weekArrivals'])->name('dashboard.week-arrivals');
 
-    Route::middleware('can.module:Saisie,Contrôle,Superivision')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/container-tracking', [ContainerTrackingController::class, 'index'])->name('container-tracking.index');
         Route::get('/container-tracking/data', [ContainerTrackingController::class, 'data'])->name('container-tracking.data');
 
@@ -96,7 +96,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/authorizations/{authorization}', [AuthorizationController::class, 'destroy'])->name('authorizations.destroy');
     });
 
-    Route::middleware('can.module:Saisie')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
         Route::get('/customers/data', [CustomerController::class, 'data'])->name('customers.data');
         Route::get('/customers/create', [CustomerController::class, 'create'])->name('customers.create');
@@ -118,7 +118,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/customers/{customer}/documents/{document}', [CustomerDocumentController::class, 'destroy'])->name('customers.documents.destroy');
     });
 
-    Route::middleware('can.module:Chargement,Superivision')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/loadings', [LoadingController::class, 'index'])->name('loadings.index');
         Route::get('/loadings/data', [LoadingController::class, 'data'])->name('loadings.data');
         Route::get('/loadings/create', [LoadingController::class, 'create'])->name('loadings.create');
@@ -128,7 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/loadings/{loading}', [LoadingController::class, 'destroy'])->name('loadings.destroy');
     });
 
-    Route::middleware('can.module:Chargement')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
         Route::get('/cars/data', [CarController::class, 'data'])->name('cars.data');
         Route::get('/cars/create', [CarController::class, 'create'])->name('cars.create');
@@ -150,7 +150,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/car-drivers/{carDriver}', [CarDriverController::class, 'destroy'])->name('car-drivers.destroy');
     });
 
-    Route::middleware('can.module:Chargement,Contrôle,Superivision')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/loading-t1s', [LoadingT1Controller::class, 'index'])->name('loading-t1s.index');
         Route::get('/loading-t1s/data', [LoadingT1Controller::class, 'data'])->name('loading-t1s.data');
         Route::get('/loading-t1s/create', [LoadingT1Controller::class, 'create'])->name('loading-t1s.create');
@@ -162,7 +162,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/loading-t1s/{loadingT1}', [LoadingT1Controller::class, 'destroy'])->name('loading-t1s.destroy');
     });
 
-    Route::middleware('can.module:Compatibilité')->group(function () {
+    Route::middleware('can.module')->group(function () {
         Route::get('/mandataire-balances', [MandataireBalanceController::class, 'index'])->name('mandataire-balances.index');
         Route::get('/mandataire-balances/data', [MandataireBalanceController::class, 'data'])->name('mandataire-balances.data');
 
