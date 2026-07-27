@@ -45,6 +45,7 @@
                     {data: (d) => `<span class="badge badge-secondary">${d.documents_count}</span>`},
                     {data: (d) => `
                         <a href="/admin/customers/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a>
+                        <a href="/admin/customers/${d.id}/transfer" class="btn btn-sm btn-warning" title="Transférer le portefeuille"><i class="fa fa-exchange"></i></a>
                         <form method="POST" action="/admin/customers/${d.id}" class="d-inline" onsubmit="return confirm('Archiver ce mandataire ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="DELETE">

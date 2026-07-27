@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\CustomerCompany;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -85,5 +86,45 @@ class CustomerController extends Controller
         $customer->delete();
 
         return redirect()->route('admin.customers.index')->with('success', 'Mandataire archivé.');
+    }
+
+    public function transferForm(Customer $customer): View
+    {
+        return view('admin.customers.transfer', [
+            'customer' => $customer->load('companies'),
+            'targets' => Customer::query()->where('id', '!=', $customer->id)->orderBy('customer_name')->get(),
+        ]);
+    }
+
+    /**
+     * Transfert du mandataire entier (toutes ses sociétés) vers un autre
+     * mandataire, comme Customer::transfert() en CI.
+     */
+    public function transfer(Request $request, Customer $customer): RedirectResponse
+    {
+        $data = $request->validate([
+            'target' => ['required', 'exists:customers,id', 'not_in:'.$customer->id],
+        ]);
+
+        $target = Customer::findOrFail($data['target']);
+        $customer->transferAllTo($target);
+
+        return redirect()->route('admin.customers.index')->with('success', "Mandataire transféré vers {$target->customer_name}.");
+    }
+
+    /**
+     * Transfert d'une seule société cliente vers un autre mandataire, comme
+     * Customer::transfert_customer_company() en CI.
+     */
+    public function transferCompany(Request $request, Customer $customer, CustomerCompany $company): RedirectResponse
+    {
+        $data = $request->validate([
+            'target' => ['required', 'exists:customers,id', 'not_in:'.$customer->id],
+        ]);
+
+        $target = Customer::findOrFail($data['target']);
+        $customer->transferCompanyTo($company, $target);
+
+        return redirect()->route('admin.customers.index')->with('success', "Société cliente transférée vers {$target->customer_name}.");
     }
 }
