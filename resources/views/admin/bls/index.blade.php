@@ -78,6 +78,12 @@
                                 <button class="btn btn-sm btn-success" title="Clôturer"><i class="fa fa-check"></i></button>
                                </form>`
                             : '';
+                        const unstartBtn = (d.is_started && !d.is_completed)
+                            ? `<form method="POST" action="/admin/bls/${d.id}/unstart" class="d-inline" onsubmit="return confirm('Remettre ce BL en attente d\\'échange BL / BAD ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-secondary" title="Remettre en attente"><i class="fa fa-step-backward"></i></button>
+                               </form>`
+                            : '';
                         const reopenBtn = d.is_completed
                             ? `<form method="POST" action="/admin/bls/${d.id}/reopen" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -89,7 +95,7 @@
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button class="btn btn-sm btn-danger" title="Supprimer"><i class="fa fa-times"></i></button>
                                </form>`;
-                        return `<a href="/admin/bls/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a> ${startBtn} ${completeBtn} ${reopenBtn} ${deleteBtn}`;
+                        return `<a href="/admin/bls/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a> ${startBtn} ${completeBtn} ${unstartBtn} ${reopenBtn} ${deleteBtn}`;
                     }},
                 ],
             });

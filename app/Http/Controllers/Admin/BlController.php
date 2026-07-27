@@ -134,6 +134,20 @@ class BlController extends Controller
         return back()->with('success', 'BL rouvert.');
     }
 
+    /**
+     * Fait repasser un BL "en cours" à "arrivé" (avant démarrage) : annule le
+     * démarrage et supprime l'échange BL / BAD enregistrés, comme
+     * Bls::restore_bl_waiting()/delete_bl_exchange()/delete_bl_bad() en CI.
+     */
+    public function unstart(Bl $bl): RedirectResponse
+    {
+        $bl->update(['is_started' => false]);
+        $bl->exchange?->delete();
+        $bl->deliveryNote?->delete();
+
+        return back()->with('success', 'BL remis en attente d\'échange BL / BAD.');
+    }
+
     public function exchange(Request $request, Bl $bl): RedirectResponse
     {
         $data = $request->validate(['date_received' => ['nullable', 'date']]);

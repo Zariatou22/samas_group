@@ -50,6 +50,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/bls/{bl}/start', [BlController::class, 'start'])->name('bls.start');
         Route::post('/bls/{bl}/complete', [BlController::class, 'complete'])->name('bls.complete');
         Route::post('/bls/{bl}/reopen', [BlController::class, 'reopen'])->name('bls.reopen');
+        Route::post('/bls/{bl}/unstart', [BlController::class, 'unstart'])->name('bls.unstart');
         Route::post('/bls/{bl}/exchange', [BlController::class, 'exchange'])->name('bls.exchange');
         Route::post('/bls/{bl}/bad', [BlController::class, 'bad'])->name('bls.bad');
         Route::post('/bls/{bl}/observation', [BlController::class, 'observation'])->name('bls.observation');
