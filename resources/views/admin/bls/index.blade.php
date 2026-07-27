@@ -6,6 +6,7 @@
     <p>
         <a href="{{ route('admin.home') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
         <a href="{{ route('admin.bls.create') }}" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Nouvel arrivage</a>
+        <a href="{{ route('admin.bls.export', ['activeTab' => $activeTab]) }}" class="btn btn-outline-success"><i class="fa fa-file-excel-o"></i> Exporter</a>
     </p>
 
     <div class="card">

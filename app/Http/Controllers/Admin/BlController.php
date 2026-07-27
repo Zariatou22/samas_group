@@ -17,6 +17,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BlController extends Controller
 {
@@ -33,18 +36,7 @@ class BlController extends Controller
      */
     public function data(Request $request): JsonResponse
     {
-        $query = match ($request->query('activeTab', 'waiting')) {
-            'all' => Bl::query(),
-            'arrived' => Bl::arrived(),
-            'ongoing' => Bl::ongoing(),
-            'completed' => Bl::completed(),
-            default => Bl::waiting(),
-        };
-
-        $bls = $query->with(['mandataire', 'customerCompany', 'shippingCompany', 'containers', 'exchange', 'deliveryNote'])
-            ->withCount('containers')
-            ->orderByDesc('created')
-            ->get();
+        $bls = $this->scopedBls($request->query('activeTab', 'waiting'));
 
         $data = $bls->map(function (Bl $bl) {
             return [
@@ -70,6 +62,85 @@ class BlController extends Controller
         });
 
         return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Export Excel de l'onglet courant, comme
+     * Bl::export_waiting/arrived/ongoing/completed/all() en CI.
+     */
+    public function export(Request $request): StreamedResponse
+    {
+        $activeTab = $request->query('activeTab', 'waiting');
+        $bls = $this->scopedBls($activeTab);
+
+        $labels = [
+            'waiting' => 'BL en attente',
+            'arrived' => 'BL arrivés',
+            'ongoing' => 'BL en cours d\'opération',
+            'completed' => 'BL clôturés',
+            'all' => 'Tous les BL',
+        ];
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(mb_strtoupper($labels[$activeTab] ?? 'BL'));
+
+        $headers = ['N° B/L', 'Mandataire', 'Client', 'Compagnie', 'Type', 'Conteneurs', 'ETA', 'Date réception doc', 'Description marchandise', 'Echange BL', 'Réception BAD', 'Validité BAD', 'Date de transfert', 'Observations'];
+        $sheet->fromArray($headers, null, 'A1');
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+
+        $row = 2;
+        foreach ($bls as $bl) {
+            $containers = $bl->containers->map(fn ($c) => trim($c->type_tc.' X '.$c->quantity))->implode(', ');
+
+            $sheet->fromArray([
+                $bl->bl,
+                $bl->mandataire?->customer_name,
+                $bl->customerCompany?->name,
+                $bl->shippingCompany?->name,
+                $bl->type_operation,
+                $containers ?: '-',
+                optional($bl->containers->max('eta'))->format('d/m/Y') ?: '-',
+                optional($bl->created)->format('d/m/Y') ?: '-',
+                $bl->description,
+                optional($bl->exchange?->date_received)->format('d/m/Y') ?: '-',
+                optional($bl->deliveryNote?->date_received)->format('d/m/Y') ?: '-',
+                optional($bl->deliveryNote?->date_valid)->format('d/m/Y') ?: '-',
+                optional($bl->transferts()->max('date_received'))->format('d/m/Y') ?: '-',
+                $bl->observation,
+            ], null, "A{$row}");
+            $row++;
+        }
+
+        foreach (range('A', 'N') as $column) {
+            $sheet->getColumnDimension($column)->setAutoSize(true);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'bl-'.$activeTab.'-'.now()->format('Y-m-d').'.xlsx';
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $filename, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, Bl>
+     */
+    private function scopedBls(string $activeTab)
+    {
+        $query = match ($activeTab) {
+            'all' => Bl::query(),
+            'arrived' => Bl::arrived(),
+            'ongoing' => Bl::ongoing(),
+            'completed' => Bl::completed(),
+            default => Bl::waiting(),
+        };
+
+        return $query->with(['mandataire', 'customerCompany', 'shippingCompany', 'containers', 'exchange', 'deliveryNote'])
+            ->withCount('containers')
+            ->orderByDesc('created')
+            ->get();
     }
 
     public function create(): View

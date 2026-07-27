@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/bls', [BlController::class, 'index'])->name('bls.index');
         Route::get('/bls/data', [BlController::class, 'data'])->name('bls.data');
+        Route::get('/bls/export', [BlController::class, 'export'])->name('bls.export');
         Route::get('/bls/create', [BlController::class, 'create'])->name('bls.create');
         Route::post('/bls', [BlController::class, 'store'])->name('bls.store');
         Route::get('/bls/{bl}/edit', [BlController::class, 'edit'])->name('bls.edit');
