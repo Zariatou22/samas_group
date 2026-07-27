@@ -53,6 +53,7 @@ class BlController extends Controller
                 'customer_name' => $bl->mandataire?->customer_name,
                 'customer_company_name' => $bl->customerCompany?->name,
                 'containers_count' => $bl->containers_count,
+                'container_labels' => $bl->containers->map(fn ($c) => trim($c->type_tc.' X '.$c->quantity))->all(),
                 'eta_date' => optional($bl->containers->max('eta'))->format('Y-m-d'),
                 'created' => optional($bl->created)->format('Y-m-d'),
                 'company_name' => $bl->shippingCompany?->name,

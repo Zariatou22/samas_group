@@ -25,8 +25,10 @@
                             <th class="text-center align-middle">CONTENEURS</th>
                             <th class="text-center align-middle">ETA</th>
                             <th class="text-center align-middle">DATE RÉCEPTION<br>DOC</th>
+                            <th class="text-center align-middle">DESCRIPTION<br>MARCHANDISE</th>
                             <th class="text-center align-middle">ECHANGE<br>BL</th>
-                            <th class="text-center align-middle">BAD</th>
+                            <th class="text-center align-middle">RÉCEPTION<br>BAD</th>
+                            <th class="text-center align-middle">VALIDITÉ<br>BAD</th>
                             <th class="text-center align-middle">DATE DE<br>TRANSFERT</th>
                             <th class="text-center align-middle">OBSERVATIONS</th>
                             <th class="text-center align-middle">ACTIONS</th>
@@ -53,11 +55,13 @@
                     {data: (d) => d.customer_company_name ?? '-'},
                     {data: (d) => d.company_name ?? '-'},
                     {data: (d) => d.type_operation ?? '-'},
-                    {data: (d) => d.containers_count ?? 0},
+                    {data: (d) => (d.container_labels && d.container_labels.length) ? d.container_labels.join('<br>') : '-'},
                     {data: (d) => d.eta_date ? moment(d.eta_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.created ? moment(d.created).format('DD/MM/YYYY') : '-'},
+                    {data: (d) => d.description ?? '-'},
                     {data: (d) => d.exchange_date ? moment(d.exchange_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.bad_date ? moment(d.bad_date).format('DD/MM/YYYY') : '-'},
+                    {data: (d) => d.valid_date ? moment(d.valid_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.transfert_date ? moment(d.transfert_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.observation ?? '-'},
                     {data: (d) => {
@@ -80,7 +84,12 @@
                                 <button class="btn btn-sm btn-secondary" title="Rouvrir"><i class="fa fa-undo"></i></button>
                                </form>`
                             : '';
-                        return `<a href="/admin/bls/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a> ${startBtn} ${completeBtn} ${reopenBtn}`;
+                        const deleteBtn = `<form method="POST" action="/admin/bls/${d.id}" class="d-inline" onsubmit="return confirm('Voulez-vous vraiment supprimer ce BL ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-sm btn-danger" title="Supprimer"><i class="fa fa-times"></i></button>
+                               </form>`;
+                        return `<a href="/admin/bls/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a> ${startBtn} ${completeBtn} ${reopenBtn} ${deleteBtn}`;
                     }},
                 ],
             });
