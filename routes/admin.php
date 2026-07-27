@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AccountingInvoiceFieldRegularController;
 use App\Http\Controllers\Admin\AccountingInvoiceLabelController;
 use App\Http\Controllers\Admin\AuthorizationController;
 use App\Http\Controllers\Admin\BlController;
+use App\Http\Controllers\Admin\BlUnpotController;
 use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\CarDriverController;
 use App\Http\Controllers\Admin\CarOwnerController;
@@ -61,6 +62,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/bls/{bl}/containers', [ContainerController::class, 'store'])->name('bls.containers.store');
         Route::put('/bls/{bl}/containers/{container}', [ContainerController::class, 'update'])->name('bls.containers.update');
         Route::delete('/bls/{bl}/containers/{container}', [ContainerController::class, 'destroy'])->name('bls.containers.destroy');
+
+        Route::get('/bls/{bl}/unpot', [BlUnpotController::class, 'index'])->name('bls.unpot.index');
+        Route::post('/bls/{bl}/unpot', [BlUnpotController::class, 'store'])->name('bls.unpot.store');
+        Route::delete('/bls/{bl}/unpot/{unpot}', [BlUnpotController::class, 'destroy'])->name('bls.unpot.destroy');
 
         Route::get('/product-types', [ProductTypeController::class, 'index'])->name('product-types.index');
         Route::get('/product-types/data', [ProductTypeController::class, 'data'])->name('product-types.data');

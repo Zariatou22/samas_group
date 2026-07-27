@@ -16,9 +16,14 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5>Conteneurs</h5>
-            <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#containerModal" onclick="openContainerModal()">
-                <i class="fa fa-plus"></i> Ajouter un conteneur
-            </button>
+            <div>
+                @if ($bl->type_operation === 'DEPOTAGE')
+                    <a href="{{ route('admin.bls.unpot.index', $bl) }}" class="btn btn-sm btn-outline-warning"><i class="fa fa-download"></i> Dépotage</a>
+                @endif
+                <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#containerModal" onclick="openContainerModal()">
+                    <i class="fa fa-plus"></i> Ajouter un conteneur
+                </button>
+            </div>
         </div>
         <div class="card-block">
             <div class="table-responsive">

@@ -116,6 +116,11 @@ class Bl extends Model
         return $this->hasMany(Loading::class, 'bl');
     }
 
+    public function unpots(): HasMany
+    {
+        return $this->hasMany(BlUnpot::class, 'bl');
+    }
+
     public function exchange(): HasOne
     {
         return $this->hasOne(Exchange::class, 'bl');
