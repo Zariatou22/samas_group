@@ -104,6 +104,17 @@ class InvoiceController extends Controller
         unset($data['paid'], $data['paid_amount'], $data['payment_reference']);
         $data['customer_company'] = $data['customer_company'] ?? 0;
 
+        // Dédoublonnage (mandataire, BL, référence), comme Invoices::check_invoice() en CI.
+        $exists = Invoice::query()
+            ->where('customer', $data['customer'])
+            ->where('bl', $data['bl'])
+            ->where('reference', $data['reference'])
+            ->exists();
+
+        if ($exists) {
+            return back()->withInput()->withErrors(['reference' => 'Une facture avec ce mandataire, ce BL et cette référence existe déjà.']);
+        }
+
         $invoice = Invoice::create($data + ['user' => auth()->id(), 'paid' => $paid]);
 
         if ($paid) {
@@ -146,6 +157,17 @@ class InvoiceController extends Controller
         $paymentReference = $data['payment_reference'] ?? null;
         unset($data['paid'], $data['paid_amount'], $data['payment_reference']);
 
+        $exists = Invoice::query()
+            ->where('customer', $invoice->customer)
+            ->where('bl', $invoice->bl)
+            ->where('reference', $data['reference'])
+            ->where('id', '!=', $invoice->id)
+            ->exists();
+
+        if ($exists) {
+            return back()->withInput()->withErrors(['reference' => 'Une facture avec ce mandataire, ce BL et cette référence existe déjà.']);
+        }
+
         $invoice->update($data + ['paid' => $paid]);
 
         if ($paid) {
@@ -166,6 +188,10 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice): RedirectResponse
     {
+        // La cascade sur le paiement associé évite de fausser les soldes
+        // mandataires (MandataireBalanceController), comme
+        // Invoices::delete_invoice() en CI.
+        $invoice->payment?->delete();
         $invoice->delete();
 
         return back()->with('success', 'Facture archivée.');
