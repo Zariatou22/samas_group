@@ -26,6 +26,9 @@
                     </div>
                     <ul class="show-notification profile-notification dropdown-menu dropdown-menu-right">
                         <li>
+                            <a href="{{ route('profile.edit') }}"><i class="ti-user"></i> Mon profil</a>
+                        </li>
+                        <li>
                             <a href="{{ config('app.url') }}" target="_blank"><i class="ti-world"></i> Voir le site</a>
                         </li>
                         <li>
