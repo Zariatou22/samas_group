@@ -132,6 +132,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/loading-t1s', [LoadingT1Controller::class, 'store'])->name('loading-t1s.store');
         Route::get('/loading-t1s/{loadingT1}/edit', [LoadingT1Controller::class, 'edit'])->name('loading-t1s.edit');
         Route::put('/loading-t1s/{loadingT1}', [LoadingT1Controller::class, 'update'])->name('loading-t1s.update');
+        Route::post('/loading-t1s/validate-bulk', [LoadingT1Controller::class, 'validateBulk'])->name('loading-t1s.validate-bulk');
         Route::post('/loading-t1s/{loadingT1}/validate', [LoadingT1Controller::class, 'validateT1'])->name('loading-t1s.validate');
         Route::delete('/loading-t1s/{loadingT1}', [LoadingT1Controller::class, 'destroy'])->name('loading-t1s.destroy');
     });

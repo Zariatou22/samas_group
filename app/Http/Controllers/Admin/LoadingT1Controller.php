@@ -14,11 +14,36 @@ class LoadingT1Controller extends Controller
 {
     public function index(Request $request): View
     {
-        return view('admin.loading-t1s.index', ['activeTab' => $request->query('activeTab', 'ongoing')]);
+        return view('admin.loading-t1s.index', [
+            'activeTab' => $request->query('activeTab', 'ongoing'),
+            'counts' => [
+                'total' => LoadingT1::query()->count(),
+                'ongoing' => LoadingT1::query()->ongoing()->count(),
+                'expired' => LoadingT1::query()->expired()->count(),
+                'waiting' => Loading::query()->doesntHave('t1')->count(),
+            ],
+        ]);
     }
 
     public function data(Request $request): JsonResponse
     {
+        if ($request->query('activeTab', 'ongoing') === 'waiting') {
+            $loadings = Loading::query()->doesntHave('t1')
+                ->with(['parentBl', 'mandataire', 'vehicle'])
+                ->orderByDesc('loading_date')
+                ->get();
+
+            $data = $loadings->map(fn (Loading $l) => [
+                'id' => $l->id,
+                'is_loading_without_t1' => true,
+                'bl' => $l->parentBl?->bl,
+                'customer_name' => $l->mandataire?->customer_name,
+                'vehicle' => $l->vehicle?->full_registration,
+            ]);
+
+            return response()->json(['data' => $data]);
+        }
+
         $query = match ($request->query('activeTab', 'ongoing')) {
             'expired' => LoadingT1::query()->expired(),
             default => LoadingT1::query()->ongoing(),
@@ -89,6 +114,24 @@ class LoadingT1Controller extends Controller
         $loadingT1->update(['validate' => now()]);
 
         return back()->with('success', 'T1 validé.');
+    }
+
+    /**
+     * Validation en masse : sélection multiple de T1 + une date de
+     * validation appliquée à tous, comme T1::validate()/
+     * TransitT1::validate_t1() en CI.
+     */
+    public function validateBulk(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['exists:loading_t1,id'],
+            'validate_date' => ['required', 'date'],
+        ]);
+
+        LoadingT1::query()->whereIn('id', $data['ids'])->update(['validate' => $data['validate_date']]);
+
+        return back()->with('success', count($data['ids']).' T1 validé(s).');
     }
 
     public function destroy(LoadingT1 $loadingT1): RedirectResponse
