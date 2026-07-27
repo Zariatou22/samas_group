@@ -17,7 +17,14 @@ class CarDriverController extends Controller
             'owner' => ['required', 'exists:car_owners,id'],
         ]);
 
-        $driver = CarDriver::create($data + ['user' => auth()->id()]);
+        // Dédoublonnage par nom+contact (pas par transporteur), comme Drivers::set() en CI.
+        $driver = CarDriver::query()->where('name', $data['name'])->where('contact', $data['contact'] ?? null)->first();
+
+        if ($driver) {
+            $driver->update($data);
+        } else {
+            $driver = CarDriver::create($data + ['user' => auth()->id()]);
+        }
 
         return back()->with('success', 'Chauffeur ajouté.')->with('newDriverId', $driver->id);
     }

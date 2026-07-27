@@ -50,7 +50,17 @@ class CarController extends Controller
             'driver' => ['required', 'exists:car_drivers,id'],
         ]);
 
-        Car::create($data + ['user' => auth()->id()]);
+        // Dédoublonnage par immatriculation complète, comme Cars::set() en CI.
+        $car = Car::query()
+            ->where('front_registration', $data['front_registration'])
+            ->where('back_registration', $data['back_registration'])
+            ->first();
+
+        if ($car) {
+            $car->update($data);
+        } else {
+            Car::create($data + ['user' => auth()->id()]);
+        }
 
         return redirect()->route('admin.cars.index')->with('success', 'Véhicule enregistré.');
     }

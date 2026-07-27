@@ -16,7 +16,14 @@ class CarOwnerController extends Controller
             'contact' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $owner = CarOwner::create($data + ['user' => auth()->id()]);
+        // Dédoublonnage par nom+contact, comme Owners::set() en CI.
+        $owner = CarOwner::query()->where('name', $data['name'])->where('contact', $data['contact'] ?? null)->first();
+
+        if ($owner) {
+            $owner->update($data);
+        } else {
+            $owner = CarOwner::create($data + ['user' => auth()->id()]);
+        }
 
         return back()->with('success', 'Transporteur ajouté.')->with('newOwnerId', $owner->id);
     }
