@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\PermController;
 use App\Http\Controllers\Admin\ProductTypeController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SourceController;
+use App\Http\Controllers\Admin\UserActionController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -210,6 +211,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('/user-actions', [UserActionController::class, 'index'])->name('user-actions.index');
+        Route::get('/user-actions/data', [UserActionController::class, 'data'])->name('user-actions.data');
 
         Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
         Route::get('/groups/data', [GroupController::class, 'data'])->name('groups.data');

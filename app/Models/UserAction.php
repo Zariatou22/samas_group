@@ -17,6 +17,15 @@ class UserAction extends Model
 
     protected $primaryKey = 'idsessinfo';
 
+    protected $fillable = [
+        'user',
+        'action',
+        'platform',
+        'device',
+        'browser',
+        'ip',
+    ];
+
     protected function casts(): array
     {
         return [
