@@ -68,6 +68,12 @@
             transform: scale(1.2);
         }
 
+        /* Espacement entre le header et le début du contenu de la sidebar,
+           pour ne pas coller le premier menu directement sous le header. */
+        .pcoded-navbar .pcoded-inner-navbar {
+            padding-top: 18px;
+        }
+
         /* Sous-menus : chevron au lieu d'une icône métier, aligné avec le
            texte des menus parents (même colonne que l'icône 30px + marge
            du niveau supérieur, cf. .pcoded-item > li > a > .pcoded-micon). */
