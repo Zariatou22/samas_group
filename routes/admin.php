@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\CarController;
 use App\Http\Controllers\Admin\CarDriverController;
 use App\Http\Controllers\Admin\CarOwnerController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\ContainerController;
 use App\Http\Controllers\Admin\ContainerTrackingController;
 use App\Http\Controllers\Admin\CustomerCompanyController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -56,6 +57,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/bls/{bl}/observation', [BlController::class, 'observation'])->name('bls.observation');
         Route::post('/bls/{bl}/transfert', [BlController::class, 'transfert'])->name('bls.transfert');
         Route::delete('/bls/{bl}/transfert/{transfert}', [BlController::class, 'transfertDestroy'])->name('bls.transfert.destroy');
+
+        Route::post('/bls/{bl}/containers', [ContainerController::class, 'store'])->name('bls.containers.store');
+        Route::put('/bls/{bl}/containers/{container}', [ContainerController::class, 'update'])->name('bls.containers.update');
+        Route::delete('/bls/{bl}/containers/{container}', [ContainerController::class, 'destroy'])->name('bls.containers.destroy');
 
         Route::get('/product-types', [ProductTypeController::class, 'index'])->name('product-types.index');
         Route::get('/product-types/data', [ProductTypeController::class, 'data'])->name('product-types.data');
