@@ -18,6 +18,7 @@ class CustomerDocument extends Model
         'name',
         'filename',
         'status',
+        'created',
     ];
 
     protected function casts(): array

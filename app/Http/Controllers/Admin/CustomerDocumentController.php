@@ -32,6 +32,22 @@ class CustomerDocumentController extends Controller
         return back()->with('success', 'Document ajouté.');
     }
 
+    /**
+     * Corrige le nom/date d'un document existant sans le réuploader, comme
+     * Customers::update_file() en CI.
+     */
+    public function update(Request $request, Customer $customer, CustomerDocument $document): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'created' => ['nullable', 'date'],
+        ]);
+
+        $document->update($data);
+
+        return back()->with('success', 'Document mis à jour.');
+    }
+
     public function destroy(Customer $customer, CustomerDocument $document): RedirectResponse
     {
         $document->delete();

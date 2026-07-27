@@ -96,6 +96,11 @@
                                 </td>
                                 <td>{{ optional($document->created)->format('d/m/Y') }}</td>
                                 <td>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" title="Modifier"
+                                        onclick='openDocumentEditModal(@json(["id" => $document->id, "name" => $document->name, "created" => optional($document->created)->format("Y-m-d")]))'
+                                        data-toggle="modal" data-target="#documentEditModal">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
                                     <form method="POST" action="{{ route('admin.customers.documents.destroy', [$customer, $document]) }}" class="d-inline" onsubmit="return confirm('Supprimer ce document ?')">
                                         @csrf
                                         @method('DELETE')
@@ -189,10 +194,46 @@
             </form>
         </div>
     </div>
+
+    <div class="modal fade" id="documentEditModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="POST" id="documentEditForm" action="">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifier le document</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Libellé *</label>
+                            <input type="text" name="name" id="documentEditName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" name="created" id="documentEditDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
     <script>
+        function openDocumentEditModal(doc) {
+            const form = document.getElementById('documentEditForm');
+            form.action = `/admin/customers/{{ $customer->id }}/documents/${doc.id}`;
+            document.getElementById('documentEditName').value = doc.name ?? '';
+            document.getElementById('documentEditDate').value = doc.created ?? '';
+        }
+
         function openCompanyModal(company) {
             const form = document.getElementById('companyForm');
             const methodField = document.getElementById('companyMethodField');

@@ -98,6 +98,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/customers/{customer}/companies/{company}', [CustomerCompanyController::class, 'destroy'])->name('customers.companies.destroy');
 
         Route::post('/customers/{customer}/documents', [CustomerDocumentController::class, 'store'])->name('customers.documents.store');
+        Route::put('/customers/{customer}/documents/{document}', [CustomerDocumentController::class, 'update'])->name('customers.documents.update');
         Route::delete('/customers/{customer}/documents/{document}', [CustomerDocumentController::class, 'destroy'])->name('customers.documents.destroy');
     });
 
