@@ -181,16 +181,19 @@ class BlController extends Controller
     public function transfert(Request $request, Bl $bl): RedirectResponse
     {
         $data = $request->validate([
-            'container' => ['required', 'exists:containers,id'],
+            'containers' => ['required', 'array', 'min:1'],
+            'containers.*' => ['exists:containers,id'],
             'date_received' => ['required', 'date'],
         ]);
 
-        Transfert::updateOrCreate(
-            ['bl' => $bl->id, 'container' => $data['container']],
-            ['user' => auth()->id(), 'date_received' => $data['date_received']],
-        );
+        foreach ($data['containers'] as $containerId) {
+            Transfert::updateOrCreate(
+                ['bl' => $bl->id, 'container' => $containerId],
+                ['user' => auth()->id(), 'date_received' => $data['date_received']],
+            );
+        }
 
-        return back()->with('success', 'Transfert enregistré.');
+        return back()->with('success', count($data['containers']).' conteneur(s) transféré(s).');
     }
 
     public function transfertDestroy(Bl $bl, Transfert $transfert): RedirectResponse

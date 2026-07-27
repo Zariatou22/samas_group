@@ -39,12 +39,16 @@
                     <label>Date de transfert</label>
                     <form method="POST" action="{{ route('admin.bls.transfert', $bl) }}">
                         @csrf
-                        <select name="container" class="form-control mb-2" required>
-                            <option value="">Conteneur...</option>
-                            @foreach ($containers as $container)
-                                <option value="{{ $container->id }}">{{ $container->type_tc }} — {{ $container->numero }}</option>
-                            @endforeach
-                        </select>
+                        <div class="mb-2" style="max-height: 150px; overflow-y: auto;">
+                            @forelse ($containers as $container)
+                                <div class="form-check">
+                                    <input type="checkbox" name="containers[]" value="{{ $container->id }}" class="form-check-input" id="transfertContainer{{ $container->id }}">
+                                    <label class="form-check-label" for="transfertContainer{{ $container->id }}">{{ $container->type_tc }} — {{ $container->numero }}</label>
+                                </div>
+                            @empty
+                                <p class="text-muted mb-0">Aucun conteneur.</p>
+                            @endforelse
+                        </div>
                         <input type="date" name="date_received" class="form-control mb-2" value="{{ now()->format('Y-m-d') }}" required>
                         <button type="submit" class="btn btn-sm btn-info">Enregistrer</button>
                     </form>
