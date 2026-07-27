@@ -51,7 +51,7 @@ class LoadingController extends Controller
     public function create(): View
     {
         return view('admin.loadings.create', [
-            'bls' => Bl::query()->orderByDesc('created')->get(),
+            'bls' => $this->availableBlsForLoading(),
             'cars' => Car::with(['carOwner', 'carDriver'])->orderBy('full_registration')->get(),
             'sources' => Source::query()->orderBy('name')->get(),
             'authorizationsByBl' => Bl::query()->with('authorizations')->get()
@@ -79,6 +79,11 @@ class LoadingController extends Controller
         unset($data['containers']);
 
         $bl = Bl::findOrFail($data['bl']);
+
+        if ($bl->available_for_loading <= 0) {
+            return back()->withInput()->withErrors(['bl' => 'Ce BL ne dispose plus de capacité de chargement résiduelle.']);
+        }
+
         $car = Car::findOrFail($data['car']);
 
         $loading = Loading::create($data + [
@@ -143,6 +148,21 @@ class LoadingController extends Controller
         $loading->delete();
 
         return back()->with('success', 'Chargement archivé.');
+    }
+
+    /**
+     * BL proposables au chargement : au moins une déclaration active et une
+     * capacité de chargement résiduelle (loaded < quantité déclarée), comme
+     * Loads::get_available_bl() en CI.
+     */
+    private function availableBlsForLoading()
+    {
+        return Bl::query()
+            ->whereHas('authorizations')
+            ->orderByDesc('created')
+            ->get()
+            ->filter(fn (Bl $bl) => $bl->available_for_loading > 0)
+            ->values();
     }
 
     private function syncContainers(Loading $loading, array $containerIds): void

@@ -111,6 +111,11 @@ class Bl extends Model
         return $this->hasMany(Authorization::class, 'bl');
     }
 
+    public function loadings(): HasMany
+    {
+        return $this->hasMany(Loading::class, 'bl');
+    }
+
     public function exchange(): HasOne
     {
         return $this->hasOne(Exchange::class, 'bl');
@@ -168,6 +173,19 @@ class Bl extends Model
     public function getAvailableQuantityAttribute(): float
     {
         return max(0, $this->quantity - $this->authorized_quantity);
+    }
+
+    /**
+     * Quantité déjà couverte par des chargements enregistrés.
+     */
+    public function getLoadedQuantityAttribute(): float
+    {
+        return (float) $this->loadings()->sum('quantity');
+    }
+
+    public function getAvailableForLoadingAttribute(): float
+    {
+        return max(0, $this->quantity - $this->loaded_quantity);
     }
 
     /**

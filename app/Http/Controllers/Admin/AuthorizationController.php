@@ -47,7 +47,7 @@ class AuthorizationController extends Controller
     public function create(): View
     {
         return view('admin.authorizations.create', [
-            'bls' => Bl::query()->orderByDesc('created')->get(),
+            'bls' => Bl::query()->orderByDesc('created')->get()->filter(fn (Bl $bl) => $bl->available_quantity > 0)->values(),
             'sources' => Source::query()->orderBy('name')->get(),
         ]);
     }
@@ -64,6 +64,10 @@ class AuthorizationController extends Controller
         ]);
 
         $bl = Bl::findOrFail($data['bl']);
+
+        if ($bl->available_quantity <= 0) {
+            return back()->withInput()->withErrors(['bl' => 'Ce BL ne dispose plus de capacité non déclarée.']);
+        }
 
         Authorization::create($data + [
             'user' => auth()->id(),

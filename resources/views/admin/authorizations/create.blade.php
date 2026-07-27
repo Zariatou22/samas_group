@@ -19,7 +19,7 @@
                             <option value="">Choisir...</option>
                             @foreach ($bls as $bl)
                                 <option value="{{ $bl->id }}" @selected(old('bl') == $bl->id)>
-                                    {{ $bl->bl }} — {{ $bl->mandataire?->customer_name }}
+                                    {{ $bl->bl }} — {{ $bl->mandataire?->customer_name }} (restant : {{ $bl->available_quantity }})
                                 </option>
                             @endforeach
                         </select>

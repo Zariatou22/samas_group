@@ -18,7 +18,7 @@
                         <select name="bl" id="blSelect" class="form-control" required onchange="onBlChange()">
                             <option value="">Choisir...</option>
                             @foreach ($bls as $bl)
-                                <option value="{{ $bl->id }}" @selected(old('bl') == $bl->id)>{{ $bl->bl }} — {{ $bl->mandataire?->customer_name }}</option>
+                                <option value="{{ $bl->id }}" @selected(old('bl') == $bl->id)>{{ $bl->bl }} — {{ $bl->mandataire?->customer_name }} (restant : {{ $bl->available_for_loading }})</option>
                             @endforeach
                         </select>
                     </div>
