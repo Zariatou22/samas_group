@@ -26,12 +26,12 @@
                             <th class="text-center align-middle">CONTENEURS</th>
                             <th class="text-center align-middle">ETA</th>
                             <th class="text-center align-middle">DATE RÉCEPTION<br>DOC</th>
-                            <th class="text-center align-middle">DESCRIPTION<br>MARCHANDISE</th>
+                            <th class="text-center align-middle" style="max-width: 160px;">DESCRIPTION<br>MARCHANDISE</th>
                             <th class="text-center align-middle">ECHANGE<br>BL</th>
                             <th class="text-center align-middle">RÉCEPTION<br>BAD</th>
                             <th class="text-center align-middle">VALIDITÉ<br>BAD</th>
                             <th class="text-center align-middle">DATE DE<br>TRANSFERT</th>
-                            <th class="text-center align-middle">OBSERVATIONS</th>
+                            <th class="text-center align-middle" style="max-width: 160px;">OBSERVATIONS</th>
                             <th class="text-center align-middle">ACTIONS</th>
                         </tr>
                     </thead>
@@ -59,12 +59,12 @@
                     {data: (d) => (d.container_labels && d.container_labels.length) ? d.container_labels.join('<br>') : '-'},
                     {data: (d) => d.eta_date ? moment(d.eta_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.created ? moment(d.created).format('DD/MM/YYYY') : '-'},
-                    {data: (d) => d.description ?? '-'},
+                    {data: (d) => `<div style="max-width: 160px; white-space: normal; word-break: break-word;">${d.description ?? '-'}</div>`},
                     {data: (d) => d.exchange_date ? moment(d.exchange_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.bad_date ? moment(d.bad_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.valid_date ? moment(d.valid_date).format('DD/MM/YYYY') : '-'},
                     {data: (d) => d.transfert_date ? moment(d.transfert_date).format('DD/MM/YYYY') : '-'},
-                    {data: (d) => d.observation ?? '-'},
+                    {data: (d) => `<div style="max-width: 160px; white-space: normal; word-break: break-word;">${d.observation ?? '-'}</div>`},
                     {data: (d) => {
                         const startBtn = d.is_started
                             ? ''
