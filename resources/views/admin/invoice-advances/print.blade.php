@@ -10,16 +10,45 @@
             color: #000;
             margin: 30px;
         }
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
+        .letterhead {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 10px;
+        }
+        .letterhead td {
+            vertical-align: top;
+            border: none;
+            padding: 0;
+        }
+        .letterhead .logo-cell {
+            width: 90px;
+        }
+        .letterhead .logo-cell img {
+            width: 80px;
+        }
+        .letterhead .company-cell {
+            padding-left: 12px;
+        }
+        .letterhead .company-name {
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .letterhead .tagline {
+            font-size: 12px;
+        }
+        .letterhead .phone {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .letterhead .date-cell {
+            text-align: right;
+            white-space: nowrap;
         }
         h1 {
             font-size: 20px;
             text-align: center;
-            margin: 0 0 20px;
+            margin: 15px 0 20px;
             letter-spacing: 2px;
         }
         .ref {
@@ -71,12 +100,20 @@
 <body>
     <p class="no-print text-right"><button onclick="window.print()">Imprimer</button></p>
 
-    <div class="header-row">
-        <div>Lomé, le {{ optional($receipt->date_issued)->format('d/m/Y') }}</div>
-        <div>N° <span class="ref">{{ $receipt->reference }}</span></div>
-    </div>
+    <table class="letterhead">
+        <tr>
+            <td class="logo-cell"><img src="{{ asset('images/denou-logitrans-logo.jpg') }}" alt="DENOU LOGITRANS"></td>
+            <td class="company-cell">
+                <div class="company-name">DENOU LOGITRANS TOGO</div>
+                <div class="tagline">Transport - Logistique - Transit - Entreposage</div>
+                <div class="tagline">Négoce international - Import-Export - Conseil</div>
+                <div class="phone">Tél: +228 93 82 58 20&nbsp;&nbsp;&nbsp;HEDZRANAWOE - Lomé</div>
+            </td>
+            <td class="date-cell">Lomé, le {{ optional($receipt->date_issued)->format('d/m/Y') }}</td>
+        </tr>
+    </table>
 
-    <h1>REÇU D'AVANCE</h1>
+    <h1>REÇU D'AVANCE&nbsp;&nbsp;N° <span class="ref">{{ $receipt->reference }}</span></h1>
 
     <div class="fields">
         <div><span class="label">Nom et contacts du chauffeur :</span> {{ $receipt->carDriver?->name }}{{ $receipt->carDriver?->contact ? ' — '.$receipt->carDriver->contact : '' }}</div>
