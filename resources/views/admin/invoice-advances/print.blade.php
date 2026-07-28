@@ -74,9 +74,6 @@
             text-align: right;
             width: 30%;
         }
-        table.lines tfoot td {
-            font-weight: bold;
-        }
         table.lines td.payment-line {
             padding-left: 40%;
             text-align: left;
@@ -152,12 +149,6 @@
                 <td colspan="2" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
             </tr>
         </tbody>
-        <tfoot>
-            <tr>
-                <td class="designation text-right">TOTAL</td>
-                <td class="amount">{{ number_format($receipt->lines->sum('amount'), 2, ',', ' ') }}</td>
-            </tr>
-        </tfoot>
     </table>
 
     <div class="closing-fields">
