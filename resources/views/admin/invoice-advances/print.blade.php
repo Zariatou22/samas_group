@@ -77,6 +77,10 @@
         table.lines tfoot td {
             font-weight: bold;
         }
+        table.lines td.payment-line {
+            padding-left: 40%;
+            text-align: left;
+        }
         .closing-fields {
             margin-top: 25px;
         }
@@ -142,12 +146,10 @@
                 </tr>
             @endfor
             <tr>
-                <td class="designation">Avance reçu</td>
-                <td class="amount">{{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
+                <td colspan="2" class="payment-line">Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
             </tr>
             <tr>
-                <td class="designation">Reste à payer</td>
-                <td class="amount">{{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
+                <td colspan="2" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
             </tr>
         </tbody>
         <tfoot>
