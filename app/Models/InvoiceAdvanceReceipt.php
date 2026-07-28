@@ -30,6 +30,10 @@ class InvoiceAdvanceReceipt extends Model
         'contact_client',
         'contact_transitaire',
         'destination',
+        'avance_recu',
+        'reste_a_payer',
+        'arrete_somme',
+        'reste_a_payer_destination',
         'status',
     ];
 
@@ -37,6 +41,8 @@ class InvoiceAdvanceReceipt extends Model
     {
         return [
             'date_issued' => 'date',
+            'avance_recu' => 'float',
+            'reste_a_payer' => 'float',
             'created' => 'datetime',
             'modified' => 'datetime',
         ];

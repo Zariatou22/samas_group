@@ -87,6 +87,30 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-header"><h5>Paiement</h5></div>
+            <div class="card-block">
+                <div class="row">
+                    <div class="col-md-3 form-group">
+                        <label>Avance reçu</label>
+                        <input type="number" step="0.01" name="avance_recu" class="form-control" value="{{ old('avance_recu', $receipt->avance_recu) }}">
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label>Reste à payer</label>
+                        <input type="number" step="0.01" name="reste_a_payer" class="form-control" value="{{ old('reste_a_payer', $receipt->reste_a_payer) }}">
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label>Arrêté le présent reçu à la somme de</label>
+                        <input type="text" name="arrete_somme" class="form-control" value="{{ old('arrete_somme', $receipt->arrete_somme) }}">
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label>Reste à payer à destination</label>
+                        <input type="text" name="reste_a_payer_destination" class="form-control" value="{{ old('reste_a_payer_destination', $receipt->reste_a_payer_destination) }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="text-center mb-4">
             <button type="submit" class="btn btn-primary btn-lg">Enregistrer</button>
         </div>

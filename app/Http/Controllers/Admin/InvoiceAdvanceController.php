@@ -132,6 +132,10 @@ class InvoiceAdvanceController extends Controller
             'contact_client' => ['nullable', 'string', 'max:255'],
             'contact_transitaire' => ['nullable', 'string', 'max:255'],
             'destination' => ['nullable', 'string', 'max:255'],
+            'avance_recu' => ['nullable', 'numeric'],
+            'reste_a_payer' => ['nullable', 'numeric'],
+            'arrete_somme' => ['nullable', 'string', 'max:255'],
+            'reste_a_payer_destination' => ['nullable', 'string', 'max:255'],
         ]);
     }
 

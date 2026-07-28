@@ -16,39 +16,31 @@
             margin-bottom: 10px;
         }
         .letterhead td {
-            vertical-align: top;
+            vertical-align: middle;
             border: none;
             padding: 0;
         }
         .letterhead .logo-cell {
-            width: 90px;
+            width: 130px;
         }
         .letterhead .logo-cell img {
-            width: 80px;
+            width: 120px;
         }
         .letterhead .company-cell {
             padding-left: 12px;
         }
-        .letterhead .company-name {
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .letterhead .tagline {
-            font-size: 12px;
-        }
         .letterhead .phone {
-            font-size: 12px;
-            margin-top: 4px;
+            font-size: 13px;
         }
         .letterhead .date-cell {
             text-align: right;
             white-space: nowrap;
+            vertical-align: top;
         }
         h1 {
             font-size: 20px;
             text-align: center;
-            margin: 15px 0 20px;
+            margin: 45px 0 30px;
             letter-spacing: 2px;
         }
         .ref {
@@ -57,8 +49,8 @@
         }
         .fields div {
             border-bottom: 1px dotted #000;
-            padding: 4px 0;
-            margin-bottom: 4px;
+            padding: 8px 0;
+            margin-bottom: 10px;
         }
         .fields span.label {
             font-weight: normal;
@@ -85,6 +77,23 @@
         table.lines tfoot td {
             font-weight: bold;
         }
+        .payment-fields {
+            margin-top: 15px;
+        }
+        .payment-fields div {
+            border-bottom: 1px dotted #000;
+            padding: 4px 0;
+            margin-bottom: 6px;
+            width: 60%;
+        }
+        .closing-fields {
+            margin-top: 25px;
+        }
+        .closing-fields div {
+            border-bottom: 1px dotted #000;
+            padding: 4px 0;
+            margin-bottom: 6px;
+        }
         .signatures {
             display: flex;
             justify-content: space-between;
@@ -102,11 +111,8 @@
 
     <table class="letterhead">
         <tr>
-            <td class="logo-cell"><img src="{{ asset('images/denou-logitrans-logo.jpg') }}" alt="DENOU LOGITRANS"></td>
+            <td class="logo-cell"><img src="{{ asset('images/logo-facture.jpeg') }}" alt="DENOU LOGITRANS"></td>
             <td class="company-cell">
-                <div class="company-name">DENOU LOGITRANS TOGO</div>
-                <div class="tagline">Transport - Logistique - Transit - Entreposage</div>
-                <div class="tagline">Négoce international - Import-Export - Conseil</div>
                 <div class="phone">Tél: +228 93 82 58 20&nbsp;&nbsp;&nbsp;HEDZRANAWOE - Lomé</div>
             </td>
             <td class="date-cell">Lomé, le {{ optional($receipt->date_issued)->format('d/m/Y') }}</td>
@@ -152,6 +158,16 @@
             </tr>
         </tfoot>
     </table>
+
+    <div class="payment-fields">
+        <div>Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</div>
+        <div>Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</div>
+    </div>
+
+    <div class="closing-fields">
+        <div>Arrêté le présent reçu à la somme de : {{ $receipt->arrete_somme }}</div>
+        <div>Reste à payer à destination : {{ $receipt->reste_a_payer_destination }}</div>
+    </div>
 
     <div class="signatures">
         <div>Signature du Caissier</div>
