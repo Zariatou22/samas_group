@@ -77,15 +77,6 @@
         table.lines tfoot td {
             font-weight: bold;
         }
-        .payment-fields {
-            margin-top: 15px;
-        }
-        .payment-fields div {
-            border-bottom: 1px dotted #000;
-            padding: 4px 0;
-            margin-bottom: 6px;
-            width: 60%;
-        }
         .closing-fields {
             margin-top: 25px;
         }
@@ -144,12 +135,20 @@
                     <td class="amount">{{ number_format($line->amount, 2, ',', ' ') }}</td>
                 </tr>
             @endforeach
-            @for ($i = $receipt->lines->count(); $i < 4; $i++)
+            @for ($i = $receipt->lines->count(); $i < 3; $i++)
                 <tr>
                     <td class="designation">&nbsp;</td>
                     <td class="amount">&nbsp;</td>
                 </tr>
             @endfor
+            <tr>
+                <td class="designation">Avance reçu</td>
+                <td class="amount">{{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
+            </tr>
+            <tr>
+                <td class="designation">Reste à payer</td>
+                <td class="amount">{{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
+            </tr>
         </tbody>
         <tfoot>
             <tr>
@@ -158,11 +157,6 @@
             </tr>
         </tfoot>
     </table>
-
-    <div class="payment-fields">
-        <div>Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</div>
-        <div>Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</div>
-    </div>
 
     <div class="closing-fields">
         <div>Arrêté le présent reçu à la somme de : {{ $receipt->arrete_somme }}</div>
