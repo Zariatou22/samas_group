@@ -7,7 +7,7 @@
     $providersOpen = request()->routeIs('admin.sources.*', 'admin.companies.*');
     $loadingsOpen = request()->routeIs('admin.loadings.*', 'admin.cars.*', 'admin.car-owners.*', 'admin.car-drivers.*');
     $t1Open = request()->routeIs('admin.loading-t1s.*') || (request()->routeIs('admin.loadings.index') && request('activeTab') === 'without_t1');
-    $invoicesOpen = request()->routeIs('admin.mandataire-balances.*', 'admin.invoices.*', 'admin.invoice-labels.*', 'admin.accounting-invoices.*', 'admin.accounting-invoice-labels.*', 'admin.accounting-invoice-field-regulars.*');
+    $invoicesOpen = request()->routeIs('admin.mandataire-balances.*', 'admin.invoices.*', 'admin.invoice-labels.*', 'admin.accounting-invoices.*', 'admin.accounting-invoice-labels.*', 'admin.accounting-invoice-field-regulars.*', 'admin.invoice-advances.*');
     $usersOpen = request()->routeIs('admin.users.*', 'admin.groups.*', 'admin.perms.*', 'admin.user-actions.*');
     $settingsOpen = request()->routeIs('admin.settings.*');
 @endphp
@@ -240,6 +240,12 @@
                             <a href="{{ route('admin.accounting-invoices.index') }}" class="waves-effect waves-dark">
                                 <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
                                 <span class="pcoded-mtext">Factures clients</span>
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('admin.invoice-advances.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.invoice-advances.index') }}" class="waves-effect waves-dark">
+                                <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
+                                <span class="pcoded-mtext">Reçus d'avance transport</span>
                             </a>
                         </li>
                     </ul>

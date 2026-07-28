@@ -84,14 +84,19 @@
                 columns: [
                     {data: 'name'},
                     {data: (d) => d.description ?? '-'},
-                    {data: (d) => `
-                        <button class="btn btn-sm btn-primary" title="Modifier" onclick='openLabelModal(${JSON.stringify(d)})' data-toggle="modal" data-target="#labelModal"><i class="fa fa-edit"></i></button>
+                    {data: (d) => {
+                        const editBtn = String(d.name ?? '').trim().toUpperCase() === 'AVANCE TRANSPORT'
+                            ? `<a href="{{ route('admin.invoice-advances.index') }}" class="btn btn-sm btn-primary" title="Gérer les reçus d'avance transport"><i class="fa fa-edit"></i></a>`
+                            : `<button class="btn btn-sm btn-primary" title="Modifier" onclick='openLabelModal(${JSON.stringify(d)})' data-toggle="modal" data-target="#labelModal"><i class="fa fa-edit"></i></button>`;
+                        return `
+                        ${editBtn}
                         <form method="POST" action="/admin/invoice-labels/${d.id}" class="d-inline" onsubmit="return confirm('Archiver ce libellé ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="DELETE">
                             <button class="btn btn-sm btn-danger" title="Archiver"><i class="fa fa-trash"></i></button>
                         </form>
-                    `},
+                    `;
+                    }},
                 ],
             });
         });

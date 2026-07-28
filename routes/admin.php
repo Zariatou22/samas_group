@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\CustomerDocumentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\InvoiceAdvanceController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\InvoiceLabelController;
 use App\Http\Controllers\Admin\LoadingController;
@@ -181,6 +182,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/invoice-labels', [InvoiceLabelController::class, 'store'])->name('invoice-labels.store');
         Route::put('/invoice-labels/{invoiceLabel}', [InvoiceLabelController::class, 'update'])->name('invoice-labels.update');
         Route::delete('/invoice-labels/{invoiceLabel}', [InvoiceLabelController::class, 'destroy'])->name('invoice-labels.destroy');
+
+        Route::get('/invoice-advances', [InvoiceAdvanceController::class, 'index'])->name('invoice-advances.index');
+        Route::get('/invoice-advances/data', [InvoiceAdvanceController::class, 'data'])->name('invoice-advances.data');
+        Route::get('/invoice-advances/create', [InvoiceAdvanceController::class, 'create'])->name('invoice-advances.create');
+        Route::post('/invoice-advances', [InvoiceAdvanceController::class, 'store'])->name('invoice-advances.store');
+        Route::get('/invoice-advances/{invoiceAdvance}/edit', [InvoiceAdvanceController::class, 'edit'])->name('invoice-advances.edit');
+        Route::put('/invoice-advances/{invoiceAdvance}', [InvoiceAdvanceController::class, 'update'])->name('invoice-advances.update');
+        Route::delete('/invoice-advances/{invoiceAdvance}', [InvoiceAdvanceController::class, 'destroy'])->name('invoice-advances.destroy');
+        Route::get('/invoice-advances/{invoiceAdvance}/print', [InvoiceAdvanceController::class, 'print'])->name('invoice-advances.print');
+        Route::get('/invoice-advances/driver-info/{carDriver}', [InvoiceAdvanceController::class, 'driverInfo'])->name('invoice-advances.driver-info');
 
         Route::get('/accounting-invoices', [AccountingInvoiceController::class, 'index'])->name('accounting-invoices.index');
         Route::get('/accounting-invoices/data', [AccountingInvoiceController::class, 'data'])->name('accounting-invoices.data');
