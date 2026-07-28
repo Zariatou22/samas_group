@@ -242,12 +242,6 @@
                                 <span class="pcoded-mtext">Factures clients</span>
                             </a>
                         </li>
-                        <li class="{{ request()->routeIs('admin.invoice-advances.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.invoice-advances.index') }}" class="waves-effect waves-dark">
-                                <span class="pcoded-micon pcoded-submenu-caret"><i class="fa fa-chevron-up"></i></span>
-                                <span class="pcoded-mtext">Reçus d'avance transport</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
             </ul>

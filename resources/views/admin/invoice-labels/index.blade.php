@@ -81,6 +81,7 @@
                 ajax: '{{ route('admin.invoice-labels.data') }}',
                 dataSrc: 'data',
                 language: { url: '{{ asset('vendor/able/assets/json/datatable/fr-FR.json') }}' },
+                pageLength: 25,
                 columns: [
                     {data: 'name'},
                     {data: (d) => d.description ?? '-'},
