@@ -21,6 +21,8 @@ class InvoiceAdvanceLine extends Model
         'user',
         'receipt',
         'designation',
+        'quantity',
+        'unit_price',
         'amount',
         'position',
         'status',
@@ -29,6 +31,8 @@ class InvoiceAdvanceLine extends Model
     protected function casts(): array
     {
         return [
+            'quantity' => 'float',
+            'unit_price' => 'float',
             'amount' => 'float',
             'created' => 'datetime',
             'modified' => 'datetime',

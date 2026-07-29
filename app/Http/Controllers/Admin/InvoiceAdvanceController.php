@@ -147,6 +147,8 @@ class InvoiceAdvanceController extends Controller
         $data = $request->validate([
             'lines' => ['required', 'array', 'min:1'],
             'lines.*.designation' => ['required', 'string', 'max:255'],
+            'lines.*.quantity' => ['nullable', 'numeric'],
+            'lines.*.unit_price' => ['nullable', 'numeric'],
             'lines.*.amount' => ['required', 'numeric'],
         ]);
 
@@ -165,6 +167,8 @@ class InvoiceAdvanceController extends Controller
                 'user' => auth()->id(),
                 'receipt' => $receipt->id,
                 'designation' => $line['designation'],
+                'quantity' => $line['quantity'] ?? 1,
+                'unit_price' => $line['unit_price'] ?? 0,
                 'amount' => $line['amount'],
                 'position' => $position,
             ]);

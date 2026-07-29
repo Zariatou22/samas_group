@@ -44,11 +44,11 @@
                         <input type="hidden" name="bl" id="blInput" value="{{ old('bl', $receipt->bl) }}">
                     </div>
                     <div class="col-md-4 form-group">
-                        <label>Contact client</label>
+                        <label>Nom et contact du client</label>
                         <input type="text" name="contact_client" class="form-control" value="{{ old('contact_client', $receipt->contact_client) }}">
                     </div>
                     <div class="col-md-4 form-group">
-                        <label>Contact Transitaire Cincassé</label>
+                        <label>Nom et contact du transitaire Cincassé</label>
                         <input type="text" name="contact_transitaire" class="form-control" value="{{ old('contact_transitaire', $receipt->contact_transitaire) }}">
                     </div>
                     <div class="col-md-4 form-group">
@@ -70,14 +70,16 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th>DESIGNATION</th>
-                                <th style="width:180px">PRIX TOTAL</th>
+                                <th style="width:120px">QUANTITE</th>
+                                <th style="width:150px">PRIX UNITAIRE</th>
+                                <th style="width:150px">PRIX TOTAL</th>
                                 <th style="width:60px"></th>
                             </tr>
                         </thead>
                         <tbody id="linesBody"></tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-right">Total</th>
+                                <th class="text-right" colspan="3">Total</th>
                                 <th><input type="text" id="totalDisplay" class="form-control" disabled></th>
                                 <th></th>
                             </tr>
@@ -93,19 +95,19 @@
                 <div class="row">
                     <div class="col-md-3 form-group">
                         <label>Avance reçu</label>
-                        <input type="number" step="0.01" name="avance_recu" class="form-control" value="{{ old('avance_recu', $receipt->avance_recu) }}">
+                        <input type="number" step="0.01" name="avance_recu" id="avanceRecu" class="form-control" value="{{ old('avance_recu', $receipt->avance_recu) }}" oninput="updatePaymentCalculations()">
                     </div>
                     <div class="col-md-3 form-group">
                         <label>Reste à payer</label>
-                        <input type="number" step="0.01" name="reste_a_payer" class="form-control" value="{{ old('reste_a_payer', $receipt->reste_a_payer) }}">
+                        <input type="number" step="0.01" name="reste_a_payer" id="resteAPayer" class="form-control" value="{{ old('reste_a_payer', $receipt->reste_a_payer) }}">
                     </div>
                     <div class="col-md-3 form-group">
                         <label>Arrêté le présent reçu à la somme de</label>
-                        <input type="text" name="arrete_somme" class="form-control" value="{{ old('arrete_somme', $receipt->arrete_somme) }}">
+                        <input type="text" name="arrete_somme" id="arreteSomme" class="form-control" value="{{ old('arrete_somme', $receipt->arrete_somme) }}">
                     </div>
                     <div class="col-md-3 form-group">
                         <label>Reste à payer à destination</label>
-                        <input type="text" name="reste_a_payer_destination" class="form-control" value="{{ old('reste_a_payer_destination', $receipt->reste_a_payer_destination) }}">
+                        <input type="text" name="reste_a_payer_destination" id="resteAPayerDestination" class="form-control" value="{{ old('reste_a_payer_destination', $receipt->reste_a_payer_destination) }}">
                     </div>
                 </div>
             </div>
@@ -119,7 +121,15 @@
 
 @push('scripts')
     <script>
-        const existingLines = @json($lines->map(fn ($l) => ['designation' => $l->designation, 'amount' => $l->amount]));
+        @php
+            $existingLinesData = $lines->map(fn ($l) => [
+                'designation' => $l->designation,
+                'quantity' => $l->quantity,
+                'unit_price' => $l->unit_price,
+                'amount' => $l->amount,
+            ]);
+        @endphp
+        const existingLines = @json($existingLinesData);
         let lineIndex = 0;
 
         function addLineRow(line) {
@@ -128,7 +138,9 @@
             row.id = `lineRow${i}`;
             row.innerHTML = `
                 <td><input type="text" name="lines[${i}][designation]" class="form-control" value="${line?.designation ?? ''}" required></td>
-                <td><input type="number" step="0.01" min="0" name="lines[${i}][amount]" id="lineAmount${i}" class="form-control" value="${line?.amount ?? 0}" required oninput="recalculateTotal()"></td>
+                <td><input type="number" step="0.01" min="0" name="lines[${i}][quantity]" id="lineQty${i}" class="form-control" value="${line?.quantity ?? 1}" oninput="updateLineAmount(${i})"></td>
+                <td><input type="number" step="0.01" min="0" name="lines[${i}][unit_price]" id="lineUnitPrice${i}" class="form-control" value="${line?.unit_price ?? 0}" oninput="updateLineAmount(${i})"></td>
+                <td><input type="number" step="0.01" min="0" name="lines[${i}][amount]" id="lineAmount${i}" class="form-control" value="${line?.amount ?? 0}" readonly></td>
                 <td><button type="button" class="btn btn-sm btn-danger" onclick="removeLineRow(${i})"><i class="fa fa-trash"></i></button></td>
             `;
             document.getElementById('linesBody').appendChild(row);
@@ -139,12 +151,29 @@
             recalculateTotal();
         }
 
+        function updateLineAmount(i) {
+            const qty = parseFloat(document.getElementById(`lineQty${i}`).value) || 0;
+            const unitPrice = parseFloat(document.getElementById(`lineUnitPrice${i}`).value) || 0;
+            document.getElementById(`lineAmount${i}`).value = (qty * unitPrice).toFixed(2);
+            recalculateTotal();
+        }
+
         function recalculateTotal() {
             let total = 0;
             document.querySelectorAll('#linesBody input[id^="lineAmount"]').forEach((input) => {
                 total += parseFloat(input.value) || 0;
             });
             document.getElementById('totalDisplay').value = total.toFixed(2);
+            updatePaymentCalculations();
+        }
+
+        function updatePaymentCalculations() {
+            const total = parseFloat(document.getElementById('totalDisplay').value) || 0;
+            const avance = parseFloat(document.getElementById('avanceRecu').value) || 0;
+            const reste = total - avance;
+            document.getElementById('resteAPayer').value = reste.toFixed(2);
+            document.getElementById('arreteSomme').value = montantEnLettres(avance);
+            document.getElementById('resteAPayerDestination').value = montantEnLettres(reste);
         }
 
         function onDriverChange() {
@@ -172,5 +201,73 @@
             }
             recalculateTotal();
         });
+
+        function convertTens(n) {
+            const unites = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
+            const teens = ['dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+            const dizaines = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
+
+            if (n < 10) return unites[n];
+            if (n < 20) return teens[n - 10];
+
+            const d = Math.floor(n / 10);
+            const u = n % 10;
+
+            if (d === 7 || d === 9) {
+                if (d === 7 && u === 1) {
+                    return 'soixante et onze';
+                }
+                return dizaines[d] + '-' + teens[u];
+            }
+            if (d === 8) {
+                return u === 0 ? 'quatre-vingts' : 'quatre-vingt-' + unites[u];
+            }
+            if (u === 0) return dizaines[d];
+            if (u === 1) return dizaines[d] + ' et un';
+            return dizaines[d] + '-' + unites[u];
+        }
+
+        function convertHundreds(n) {
+            const unites = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
+            const c = Math.floor(n / 100);
+            const rest = n % 100;
+            let word = '';
+            if (c > 0) {
+                word = c === 1 ? 'cent' : unites[c] + ' cent';
+                if (c > 1 && rest === 0) word += 's';
+                if (rest > 0) word += ' ' + convertTens(rest);
+            } else if (rest > 0) {
+                word = convertTens(rest);
+            }
+            return word;
+        }
+
+        function nombreEnLettres(n) {
+            n = Math.round(n);
+            if (n === 0) return 'zéro';
+            if (n < 0) return 'moins ' + nombreEnLettres(-n);
+
+            const milliards = Math.floor(n / 1e9);
+            const millions = Math.floor((n % 1e9) / 1e6);
+            const milliers = Math.floor((n % 1e6) / 1e3);
+            const reste = n % 1000;
+
+            const parts = [];
+            if (milliards > 0) parts.push(milliards === 1 ? 'un milliard' : convertHundreds(milliards) + ' milliards');
+            if (millions > 0) parts.push(millions === 1 ? 'un million' : convertHundreds(millions) + ' millions');
+            if (milliers > 0) parts.push(milliers === 1 ? 'mille' : convertHundreds(milliers) + ' mille');
+            if (reste > 0) parts.push(convertHundreds(reste));
+
+            return parts.join(' ');
+        }
+
+        function montantEnLettres(n) {
+            const val = parseFloat(n);
+            if (!val || isNaN(val)) {
+                return '';
+            }
+            const words = nombreEnLettres(Math.abs(val));
+            return words.charAt(0).toUpperCase() + words.slice(1) + ' francs CFA';
+        }
     </script>
 @endpush

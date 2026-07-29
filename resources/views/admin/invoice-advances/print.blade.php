@@ -29,6 +29,16 @@
         .letterhead .company-cell {
             padding-left: 12px;
         }
+        .letterhead .company-name {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin: 0 0 2px;
+        }
+        .letterhead .company-tagline {
+            font-size: 11px;
+            margin: 0 0 2px;
+        }
         .letterhead .phone {
             font-size: 13px;
         }
@@ -36,6 +46,11 @@
             text-align: right;
             white-space: nowrap;
             vertical-align: top;
+        }
+        .separator {
+            border: none;
+            border-top: 1px solid #000;
+            margin: 8px 0 0;
         }
         h1 {
             font-size: 20px;
@@ -68,11 +83,16 @@
             text-align: center;
         }
         table.lines td.designation {
-            width: 70%;
+            width: 46%;
         }
+        table.lines td.qty, table.lines th.qty {
+            text-align: center;
+            width: 12%;
+        }
+        table.lines td.unit-price, table.lines th.unit-price,
         table.lines td.amount, table.lines th.amount {
             text-align: right;
-            width: 30%;
+            width: 21%;
         }
         table.lines td.payment-line {
             padding-left: 40%;
@@ -105,11 +125,15 @@
         <tr>
             <td class="logo-cell"><img src="{{ asset('images/logo-facture.jpeg') }}" alt="DENOU LOGITRANS"></td>
             <td class="company-cell">
+                <div class="company-name">DENOU LOGITRANS TOGO</div>
+                <div class="company-tagline">Transport - Logistique - Transit - Entreposage</div>
+                <div class="company-tagline">Négoce international - Import-Export - Conseil</div>
                 <div class="phone">Tél: +228 93 82 58 20&nbsp;&nbsp;&nbsp;HEDZRANAWOE - Lomé</div>
             </td>
             <td class="date-cell">Lomé, le {{ optional($receipt->date_issued)->format('d/m/Y') }}</td>
         </tr>
     </table>
+    <hr class="separator">
 
     <h1>REÇU D'AVANCE&nbsp;&nbsp;N° <span class="ref">{{ $receipt->reference }}</span></h1>
 
@@ -117,8 +141,8 @@
         <div><span class="label">Nom et contacts du chauffeur :</span> {{ $receipt->carDriver?->name }}{{ $receipt->carDriver?->contact ? ' — '.$receipt->carDriver->contact : '' }}</div>
         <div><span class="label">N° du camion :</span> {{ $receipt->vehicle?->full_registration }}</div>
         <div><span class="label">N°BL/TC :</span> {{ $receipt->parentBl?->bl }}</div>
-        <div><span class="label">Contact client :</span> {{ $receipt->contact_client }}</div>
-        <div><span class="label">Contact Transitaire Cincassé :</span> {{ $receipt->contact_transitaire }}</div>
+        <div><span class="label">Nom et contact du client :</span> {{ $receipt->contact_client }}</div>
+        <div><span class="label">Nom et contact du transitaire Cincassé :</span> {{ $receipt->contact_transitaire }}</div>
         <div><span class="label">Destination :</span> {{ $receipt->destination }}</div>
     </div>
 
@@ -126,6 +150,8 @@
         <thead>
             <tr>
                 <th class="designation">DESIGNATION</th>
+                <th class="qty">QUANTITE</th>
+                <th class="unit-price">PRIX UNITAIRE</th>
                 <th class="amount">PRIX TOTAL</th>
             </tr>
         </thead>
@@ -133,20 +159,16 @@
             @foreach ($receipt->lines as $line)
                 <tr>
                     <td class="designation">{{ $line->designation }}</td>
+                    <td class="qty">{{ number_format($line->quantity, 2, ',', ' ') }}</td>
+                    <td class="unit-price">{{ number_format($line->unit_price, 2, ',', ' ') }}</td>
                     <td class="amount">{{ number_format($line->amount, 2, ',', ' ') }}</td>
                 </tr>
             @endforeach
-            @for ($i = $receipt->lines->count(); $i < 3; $i++)
-                <tr>
-                    <td class="designation">&nbsp;</td>
-                    <td class="amount">&nbsp;</td>
-                </tr>
-            @endfor
             <tr>
-                <td colspan="2" class="payment-line">Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
+                <td colspan="4" class="payment-line">Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
             </tr>
             <tr>
-                <td colspan="2" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
+                <td colspan="4" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
             </tr>
         </tbody>
     </table>
