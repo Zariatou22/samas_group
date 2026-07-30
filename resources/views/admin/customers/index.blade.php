@@ -41,7 +41,7 @@
                     {data: (d) => `<a href="/admin/customers/${d.id}/edit">${d.customer_name}</a>`},
                     {data: (d) => d.customer_contact ?? '-'},
                     {data: (d) => d.email ?? '-'},
-                    {data: (d) => `<span class="badge badge-secondary">${d.companies_count}</span>`},
+                    {data: (d) => d.companies.length ? d.companies.map((c) => `<a href="/admin/customers/${d.id}/edit">${c.name}</a>`).join('<br>') : '-'},
                     {data: (d) => `<span class="badge badge-secondary">${d.documents_count}</span>`},
                     {data: (d) => `
                         <a href="/admin/customers/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a>

@@ -19,14 +19,20 @@ class CustomerController extends Controller
 
     public function data(): JsonResponse
     {
-        $customers = Customer::withCount(['companies', 'documents'])->orderBy('customer_name')->get();
+        $customers = Customer::withCount('documents')
+            ->with(['companies' => fn ($q) => $q->select('id', 'customer', 'name')])
+            ->orderBy('customer_name')
+            ->get();
 
         $data = $customers->map(fn (Customer $c) => [
             'id' => $c->id,
             'customer_name' => $c->customer_name,
             'customer_contact' => $c->customer_contact,
             'email' => $c->email,
-            'companies_count' => $c->companies_count,
+            'companies' => $c->companies->map(fn (CustomerCompany $company) => [
+                'id' => $company->id,
+                'name' => $company->name,
+            ]),
             'documents_count' => $c->documents_count,
         ]);
 
