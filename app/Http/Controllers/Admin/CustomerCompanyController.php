@@ -5,11 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomerCompany;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CustomerCompanyController extends Controller
 {
+    public function show(Customer $customer, CustomerCompany $company): View
+    {
+        return view('admin.customers.company', [
+            'customer' => $customer,
+            'company' => $company,
+        ]);
+    }
+
     public function store(Request $request, Customer $customer): RedirectResponse
     {
         $data = $request->validate([
@@ -20,6 +29,7 @@ class CustomerCompanyController extends Controller
             'owner_contact' => ['nullable', 'string', 'max:255'],
             'rccm' => ['nullable', 'string', 'max:100'],
             'nif' => ['nullable', 'string', 'max:100'],
+            'cni' => ['nullable', 'string', 'max:100'],
         ]);
 
         $customer->companies()->create($data + ['user' => auth()->id()]);
@@ -37,6 +47,7 @@ class CustomerCompanyController extends Controller
             'owner_contact' => ['nullable', 'string', 'max:255'],
             'rccm' => ['nullable', 'string', 'max:100'],
             'nif' => ['nullable', 'string', 'max:100'],
+            'cni' => ['nullable', 'string', 'max:100'],
         ]);
 
         $company->update($data);

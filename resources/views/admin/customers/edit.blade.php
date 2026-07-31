@@ -156,6 +156,10 @@
                             <label>NIF</label>
                             <input type="text" name="nif" id="companyNif" class="form-control">
                         </div>
+                        <div class="form-group">
+                            <label>CNI</label>
+                            <input type="text" name="cni" id="companyCni" class="form-control">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -249,6 +253,7 @@
                 document.getElementById('companyOwnerContact').value = company.owner_contact ?? '';
                 document.getElementById('companyRccm').value = company.rccm ?? '';
                 document.getElementById('companyNif').value = company.nif ?? '';
+                document.getElementById('companyCni').value = company.cni ?? '';
             } else {
                 form.action = '{{ route('admin.customers.companies.store', $customer) }}';
                 form.reset();

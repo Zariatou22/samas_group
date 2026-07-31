@@ -27,6 +27,7 @@ class CustomerCompany extends Model
         'address',
         'rccm',
         'nif',
+        'cni',
         'owner_name',
         'owner_contact',
         'status',
