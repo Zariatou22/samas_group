@@ -42,7 +42,7 @@
                     {data: (d) => d.customer_contact ?? '-'},
                     {data: (d) => d.email ?? '-'},
                     {data: (d) => d.companies.length ? d.companies.map((c) => `<a href="/admin/customers/${d.id}/companies/${c.id}">${c.name}</a>`).join('<br>') : '-'},
-                    {data: (d) => `<span class="badge badge-secondary">${d.documents_count}</span>`},
+                    {data: (d) => `<a href="/admin/customers/${d.id}/documents"><span class="badge badge-secondary">${d.documents_count}</span></a>`},
                     {data: (d) => `
                         <a href="/admin/customers/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a>
                         <a href="/admin/customers/${d.id}/transfer" class="btn btn-sm btn-warning" title="Transférer le portefeuille"><i class="fa fa-exchange"></i></a>

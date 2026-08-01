@@ -15,11 +15,30 @@ class CustomerDocument extends Model
     protected $fillable = [
         'user',
         'customer',
+        'company',
         'name',
+        'type',
         'filename',
         'status',
         'created',
     ];
+
+    /**
+     * Types de documents client disponibles à l'upload, utilisés aussi pour
+     * filtrer la liste des documents depuis la fiche client (N° RCCM / N°
+     * NIF-IFU / N° CNI-Passeport).
+     */
+    public static function types(): array
+    {
+        return [
+            'rccm' => 'RCCM',
+            'nif' => 'NIF/IFU',
+            'cni' => 'CNI/Passeport',
+            'procuration' => 'Procuration',
+            'dcpm' => 'DCPM',
+            'autre' => 'Autre',
+        ];
+    }
 
     protected function casts(): array
     {
@@ -55,5 +74,14 @@ class CustomerDocument extends Model
     public function mandataire(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer');
+    }
+
+    /**
+     * Nommé "clientCompany" et non "company" pour la même raison que
+     * mandataire() ci-dessus : la colonne DB s'appelle "company".
+     */
+    public function clientCompany(): BelongsTo
+    {
+        return $this->belongsTo(CustomerCompany::class, 'company');
     }
 }

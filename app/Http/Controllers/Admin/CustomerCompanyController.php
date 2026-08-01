@@ -22,7 +22,7 @@ class CustomerCompanyController extends Controller
     public function store(Request $request, Customer $customer): RedirectResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'contact' => ['nullable', 'string', 'max:100'],
             'address' => ['nullable', 'string'],
             'owner_name' => ['nullable', 'string', 'max:255'],
@@ -31,6 +31,11 @@ class CustomerCompanyController extends Controller
             'nif' => ['nullable', 'string', 'max:100'],
             'cni' => ['nullable', 'string', 'max:100'],
         ]);
+
+        // `name` et `contact` sont NOT NULL en base (colonnes legacy) mais
+        // ne doivent plus être obligatoires cote formulaire.
+        $data['name'] ??= '';
+        $data['contact'] ??= '';
 
         $customer->companies()->create($data + ['user' => auth()->id()]);
 
@@ -40,7 +45,7 @@ class CustomerCompanyController extends Controller
     public function update(Request $request, Customer $customer, CustomerCompany $company): RedirectResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'contact' => ['nullable', 'string', 'max:100'],
             'address' => ['nullable', 'string'],
             'owner_name' => ['nullable', 'string', 'max:255'],
@@ -49,6 +54,11 @@ class CustomerCompanyController extends Controller
             'nif' => ['nullable', 'string', 'max:100'],
             'cni' => ['nullable', 'string', 'max:100'],
         ]);
+
+        // `name` et `contact` sont NOT NULL en base (colonnes legacy) mais
+        // ne doivent plus être obligatoires cote formulaire.
+        $data['name'] ??= '';
+        $data['contact'] ??= '';
 
         $company->update($data);
 

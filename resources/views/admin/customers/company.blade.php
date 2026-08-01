@@ -16,7 +16,9 @@
         </div>
         <div class="card-block">
             <div class="table-responsive">
-                @php $docsUrl = route('admin.customers.edit', $customer); @endphp
+                @php
+                    $docsBase = route('admin.customers.documents.index', $customer).'?company='.$company->id;
+                @endphp
                 <table class="table table-bordered table-sm table-hover">
                     <thead class="thead-dark">
                         <tr>
@@ -26,7 +28,7 @@
                             <th>Nom responsable</th>
                             <th>N° RCCM</th>
                             <th>N° NIF/IFU</th>
-                            <th>N° CNI</th>
+                            <th>N° CNI/PASSEPORT</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,9 +37,9 @@
                             <td>{!! nl2br(e($company->address)) !!}</td>
                             <td>{{ $company->contact ?? '-' }}</td>
                             <td>{{ $company->owner_name ?? '-' }}</td>
-                            <td><a href="{{ $docsUrl }}">{{ $company->rccm ?? '-' }}</a></td>
-                            <td><a href="{{ $docsUrl }}">{{ $company->nif ?? '-' }}</a></td>
-                            <td><a href="{{ $docsUrl }}">{{ $company->cni ?? '-' }}</a></td>
+                            <td><a href="{{ $docsBase }}&type=rccm">{{ $company->rccm ?? '-' }}</a></td>
+                            <td><a href="{{ $docsBase }}&type=nif">{{ $company->nif ?? '-' }}</a></td>
+                            <td><a href="{{ $docsBase }}&type=cni">{{ $company->cni ?? '-' }}</a></td>
                         </tr>
                     </tbody>
                 </table>

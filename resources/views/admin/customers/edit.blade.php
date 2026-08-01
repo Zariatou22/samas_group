@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="documents">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5>Documents</h5>
             <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#documentModal">
@@ -78,6 +78,8 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>LIBELLÉ</th>
+                            <th>CLIENT</th>
+                            <th>TYPE</th>
                             <th>FICHIER</th>
                             <th>AJOUTÉ LE</th>
                             <th>ACTIONS</th>
@@ -87,6 +89,8 @@
                         @forelse ($customer->documents as $document)
                             <tr>
                                 <td>{{ $document->name }}</td>
+                                <td>{{ $document->clientCompany->name ?? '-' }}</td>
+                                <td>{{ \App\Models\CustomerDocument::types()[$document->type] ?? '-' }}</td>
                                 <td>
                                     @if ($document->filename)
                                         <a href="{{ asset('storage/customers/'.$document->filename) }}" target="_blank">Voir <i class="fa fa-external-link"></i></a>
@@ -97,7 +101,7 @@
                                 <td>{{ optional($document->created)->format('d/m/Y') }}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-outline-primary" title="Modifier"
-                                        onclick='openDocumentEditModal(@json(["id" => $document->id, "name" => $document->name, "created" => optional($document->created)->format("Y-m-d")]))'
+                                        onclick='openDocumentEditModal(@json(["id" => $document->id, "name" => $document->name, "type" => $document->type, "company" => $document->company, "created" => optional($document->created)->format("Y-m-d")]))'
                                         data-toggle="modal" data-target="#documentEditModal">
                                         <i class="fa fa-edit"></i>
                                     </button>
@@ -109,7 +113,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="text-center">Aucun document.</td></tr>
+                            <tr><td colspan="6" class="text-center">Aucun document.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -129,8 +133,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Nom de la société *</label>
-                            <input type="text" name="name" id="companyName" class="form-control" required>
+                            <label>Nom de la société</label>
+                            <input type="text" name="name" id="companyName" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Contact</label>
@@ -157,7 +161,7 @@
                             <input type="text" name="nif" id="companyNif" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label>CNI</label>
+                            <label>CNI/Passeport</label>
                             <input type="text" name="cni" id="companyCni" class="form-control">
                         </div>
                     </div>
@@ -183,6 +187,24 @@
                         <div class="form-group">
                             <label>Libellé *</label>
                             <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Type de document</label>
+                            <select name="type" class="form-control">
+                                <option value="">--Choisir--</option>
+                                @foreach (\App\Models\CustomerDocument::types() as $key => $label)
+                                    <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Client</label>
+                            <select name="company" class="form-control">
+                                <option value="">--Aucun client (document du mandataire)--</option>
+                                @foreach ($customer->companies as $c)
+                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Fichier *</label>
@@ -215,6 +237,24 @@
                             <input type="text" name="name" id="documentEditName" class="form-control" required>
                         </div>
                         <div class="form-group">
+                            <label>Type de document</label>
+                            <select name="type" id="documentEditType" class="form-control">
+                                <option value="">--Choisir--</option>
+                                @foreach (\App\Models\CustomerDocument::types() as $key => $label)
+                                    <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Client</label>
+                            <select name="company" id="documentEditCompany" class="form-control">
+                                <option value="">--Aucun client (document du mandataire)--</option>
+                                @foreach ($customer->companies as $c)
+                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Date</label>
                             <input type="date" name="created" id="documentEditDate" class="form-control">
                         </div>
@@ -235,6 +275,8 @@
             const form = document.getElementById('documentEditForm');
             form.action = `/admin/customers/{{ $customer->id }}/documents/${doc.id}`;
             document.getElementById('documentEditName').value = doc.name ?? '';
+            document.getElementById('documentEditType').value = doc.type ?? '';
+            document.getElementById('documentEditCompany').value = doc.company ?? '';
             document.getElementById('documentEditDate').value = doc.created ?? '';
         }
 

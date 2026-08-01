@@ -115,6 +115,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/customers/{customer}/transfer', [CustomerController::class, 'transfer'])->name('customers.transfer');
         Route::post('/customers/{customer}/companies/{company}/transfer', [CustomerController::class, 'transferCompany'])->name('customers.companies.transfer');
 
+        Route::get('/customers/{customer}/documents', [CustomerDocumentController::class, 'index'])->name('customers.documents.index');
         Route::post('/customers/{customer}/documents', [CustomerDocumentController::class, 'store'])->name('customers.documents.store');
         Route::put('/customers/{customer}/documents/{document}', [CustomerDocumentController::class, 'update'])->name('customers.documents.update');
         Route::delete('/customers/{customer}/documents/{document}', [CustomerDocumentController::class, 'destroy'])->name('customers.documents.destroy');
