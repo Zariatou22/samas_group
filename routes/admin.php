@@ -106,6 +106,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
         Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
+        Route::get('/customers/{customer}/companies', [CustomerCompanyController::class, 'index'])->name('customers.companies.index');
         Route::get('/customers/{customer}/companies/{company}', [CustomerCompanyController::class, 'show'])->name('customers.companies.show');
         Route::post('/customers/{customer}/companies', [CustomerCompanyController::class, 'store'])->name('customers.companies.store');
         Route::put('/customers/{customer}/companies/{company}', [CustomerCompanyController::class, 'update'])->name('customers.companies.update');

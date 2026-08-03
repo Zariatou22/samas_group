@@ -16,7 +16,7 @@
         </div>
     </form>
 
-    <div class="card">
+    <div class="card" id="clients">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5>Clients</h5>
             <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#companyModal" onclick="openCompanyModal()">

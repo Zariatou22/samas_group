@@ -11,6 +11,18 @@ use Illuminate\Http\Request;
 
 class CustomerCompanyController extends Controller
 {
+    /**
+     * Liste des clients d'un mandataire (bouton "Voir" de la colonne CLIENTS
+     * dans la liste des mandataires), comme customer/companies en CI.
+     */
+    public function index(Customer $customer): View
+    {
+        return view('admin.customers.companies', [
+            'customer' => $customer,
+            'companies' => $customer->companies,
+        ]);
+    }
+
     public function show(Customer $customer, CustomerCompany $company): View
     {
         return view('admin.customers.company', [
