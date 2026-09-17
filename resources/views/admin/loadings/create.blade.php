@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Nouveau chargement')
+@section('title', $isUnloading ? 'Nouveau dépotage' : 'Nouveau chargement')
 
 @section('content')
     <p>
-        <a href="{{ route('admin.loadings.index') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
+        <a href="{{ route($listRoute) }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
     </p>
 
-    <form method="POST" action="{{ route('admin.loadings.store') }}">
+    <form method="POST" action="{{ route($storeRoute) }}">
         @csrf
         <div class="card">
             <div class="card-header"><h5>Bon de livraison et autorisation</h5></div>
@@ -18,9 +18,13 @@
                         <select name="bl" id="blSelect" class="form-control" required onchange="onBlChange()">
                             <option value="">Choisir...</option>
                             @foreach ($bls as $bl)
-                                <option value="{{ $bl->id }}" @selected(old('bl') == $bl->id)>{{ $bl->bl }} — {{ $bl->mandataire?->customer_name }} (restant : {{ $bl->available_for_loading }})</option>
+                                <option value="{{ $bl->id }}" data-bad-valid="{{ optional($bl->deliveryNote?->date_valid)->format('Y-m-d') }}" @selected(old('bl') == $bl->id)>{{ $bl->bl }} — {{ $bl->mandataire?->customer_name }} (restant : {{ $bl->availableForLoadingType($isUnloading ? 1 : 0) }})</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Validité BAD</label>
+                        <input type="date" name="bad_valid_date" id="badValidDate" class="form-control" value="{{ old('bad_valid_date') }}">
                     </div>
                     <div class="col-md-6 form-group">
                         <label>N&deg; de déclaration *</label>
@@ -95,9 +99,14 @@
         const cars = @json($cars);
 
         function onBlChange() {
-            const blId = document.getElementById('blSelect').value;
+            const blSelect = document.getElementById('blSelect');
+            const blId = blSelect.value;
             const authSelect = document.getElementById('authSelect');
             const containersSelect = document.getElementById('containersSelect');
+
+            // Pré-remplir la validité BAD du BL sélectionné (peut ensuite être modifiée à la main).
+            const selectedOption = blSelect.options[blSelect.selectedIndex];
+            document.getElementById('badValidDate').value = selectedOption?.dataset?.badValid || '';
 
             authSelect.innerHTML = '<option value="">Choisir...</option>';
             (authorizationsByBl[blId] ?? []).forEach(a => {

@@ -7,6 +7,7 @@ use App\Models\CarDriver;
 use App\Models\InvoiceAdvanceLine;
 use App\Models\InvoiceAdvanceReceipt;
 use App\Models\Loading;
+use App\Models\LoadingContainer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -53,6 +54,7 @@ class InvoiceAdvanceController extends Controller
             'receipt' => new InvoiceAdvanceReceipt(['date_issued' => now()]),
             'drivers' => CarDriver::with('carOwner')->orderBy('name')->get(),
             'lines' => collect(),
+            'containerNumbers' => null,
         ]);
     }
 
@@ -73,6 +75,7 @@ class InvoiceAdvanceController extends Controller
             'receipt' => $invoiceAdvance,
             'drivers' => CarDriver::with('carOwner')->orderBy('name')->get(),
             'lines' => $invoiceAdvance->lines,
+            'containerNumbers' => $this->containerNumbersForBlAndDriver($invoiceAdvance->bl, $invoiceAdvance->driver),
         ]);
     }
 
@@ -96,15 +99,20 @@ class InvoiceAdvanceController extends Controller
 
     public function print(InvoiceAdvanceReceipt $invoiceAdvance): View
     {
+        $invoiceAdvance->load(['carDriver', 'vehicle', 'parentBl', 'lines']);
+
         return view('admin.invoice-advances.print', [
-            'receipt' => $invoiceAdvance->load(['carDriver', 'vehicle', 'parentBl', 'lines']),
+            'receipt' => $invoiceAdvance,
+            'containerNumbers' => $this->containerNumbersForBlAndDriver($invoiceAdvance->bl, $invoiceAdvance->driver),
         ]);
     }
 
     /**
      * Auto-remplissage camion/BL à partir du chauffeur choisi : reprend le
      * chargement (Loading) le plus récent de ce chauffeur, car camion et BL
-     * y sont déjà liés ensemble.
+     * y sont déjà liés ensemble. Les numéros de conteneurs de ce chargement
+     * sont renvoyés avec le BL, pour un dépotage (le camion enlève des
+     * conteneurs précis, pas tout le BL).
      */
     public function driverInfo(CarDriver $carDriver): JsonResponse
     {
@@ -115,8 +123,47 @@ class InvoiceAdvanceController extends Controller
 
         return response()->json([
             'car' => $loading?->vehicle ? ['id' => $loading->vehicle->id, 'full_registration' => $loading->vehicle->full_registration] : null,
-            'bl' => $loading?->parentBl ? ['id' => $loading->parentBl->id, 'bl' => $loading->parentBl->bl] : null,
+            'bl' => $loading?->parentBl ? [
+                'id' => $loading->parentBl->id,
+                'bl' => $loading->parentBl->bl,
+                'containers' => $this->containerNumbersForLoading($loading),
+            ] : null,
         ]);
+    }
+
+    /**
+     * Numéros de conteneurs (distincts, triés) d'un chargement donné —
+     * reprend AdvanceReceipts::get_driver_loading_info().
+     */
+    private function containerNumbersForLoading(?Loading $loading): ?string
+    {
+        if (! $loading) {
+            return null;
+        }
+
+        $numbers = $loading->loadedContainers()->with('parentContainer')->get()
+            ->pluck('parentContainer.numero')->filter()->unique()->sort()->values();
+
+        return $numbers->isEmpty() ? null : $numbers->implode(', ');
+    }
+
+    /**
+     * Numéros de conteneurs (distincts, triés) des chargements associant ce
+     * BL et ce chauffeur — reprend AdvanceReceipts::get_receipt().
+     */
+    private function containerNumbersForBlAndDriver(?int $blId, ?int $driverId): ?string
+    {
+        if (empty($blId) || empty($driverId)) {
+            return null;
+        }
+
+        $numbers = LoadingContainer::query()
+            ->whereHas('parentLoading', fn ($q) => $q->where('bl', $blId)->where('driver', $driverId))
+            ->with('parentContainer')
+            ->get()
+            ->pluck('parentContainer.numero')->filter()->unique()->sort()->values();
+
+        return $numbers->isEmpty() ? null : $numbers->implode(', ');
     }
 
     /**

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AccountingInvoiceController;
 use App\Http\Controllers\Admin\AccountingInvoiceFieldRegularController;
 use App\Http\Controllers\Admin\AccountingInvoiceLabelController;
+use App\Http\Controllers\Admin\AccountingInvoiceOperationController;
 use App\Http\Controllers\Admin\AuthorizationController;
 use App\Http\Controllers\Admin\BlController;
 use App\Http\Controllers\Admin\BlUnpotController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Admin\LoadingT1Controller;
 use App\Http\Controllers\Admin\MandataireBalanceController;
 use App\Http\Controllers\Admin\PermController;
 use App\Http\Controllers\Admin\ProductTypeController;
+use App\Http\Controllers\Admin\ProformaInvoiceController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SourceController;
 use App\Http\Controllers\Admin\UserActionController;
@@ -34,6 +36,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::middleware('can.module')->group(function () {
+        Route::get('/operations', [HomeController::class, 'operations'])->name('operations');
+        Route::get('/tracking-menu', [HomeController::class, 'trackingMenu'])->name('tracking-menu');
+        Route::get('/document-menu', [HomeController::class, 'documentMenu'])->name('document-menu');
+    });
+    Route::middleware('has.level:Edition')->group(function () {
+        Route::get('/accounting', [HomeController::class, 'accounting'])->name('accounting');
+    });
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/containers-per-month', [DashboardController::class, 'containersPerMonth'])->name('dashboard.containers-per-month');
@@ -127,6 +138,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/loadings/data', [LoadingController::class, 'data'])->name('loadings.data');
         Route::get('/loadings/create', [LoadingController::class, 'create'])->name('loadings.create');
         Route::post('/loadings', [LoadingController::class, 'store'])->name('loadings.store');
+        Route::get('/loadings/unloadings', [LoadingController::class, 'unloadingIndex'])->name('loadings.unloadings');
+        Route::get('/loadings/unloadings/data', [LoadingController::class, 'unloadingData'])->name('loadings.unloadings-data');
+        Route::get('/loadings/unloadings/create', [LoadingController::class, 'unloadingCreate'])->name('loadings.unloadings.create');
+        Route::post('/loadings/unloadings', [LoadingController::class, 'unloadingStore'])->name('loadings.unloadings.store');
         Route::get('/loadings/{loading}/edit', [LoadingController::class, 'edit'])->name('loadings.edit');
         Route::put('/loadings/{loading}', [LoadingController::class, 'update'])->name('loadings.update');
         Route::delete('/loadings/{loading}', [LoadingController::class, 'destroy'])->name('loadings.destroy');
@@ -203,6 +218,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/accounting-invoices/{accountingInvoice}/edit', [AccountingInvoiceController::class, 'edit'])->name('accounting-invoices.edit');
         Route::put('/accounting-invoices/{accountingInvoice}', [AccountingInvoiceController::class, 'update'])->name('accounting-invoices.update');
         Route::delete('/accounting-invoices/{accountingInvoice}', [AccountingInvoiceController::class, 'destroy'])->name('accounting-invoices.destroy');
+        Route::get('/accounting-invoices/{accountingInvoice}/print', [AccountingInvoiceController::class, 'print'])->name('accounting-invoices.print');
+
+        Route::get('/accounting-invoices/operations/unbilled', [AccountingInvoiceOperationController::class, 'unbilled'])->name('accounting-invoices.operations.unbilled');
+        Route::get('/accounting-invoices/operations/unbilled/data', [AccountingInvoiceOperationController::class, 'unbilledData'])->name('accounting-invoices.operations.unbilled-data');
+        Route::get('/accounting-invoices/operations/create', [AccountingInvoiceOperationController::class, 'create'])->name('accounting-invoices.operations.create');
+        Route::post('/accounting-invoices/operations', [AccountingInvoiceOperationController::class, 'store'])->name('accounting-invoices.operations.store');
+        Route::post('/accounting-invoices/operations/delete', [AccountingInvoiceOperationController::class, 'destroy'])->name('accounting-invoices.operations.destroy');
+        Route::post('/accounting-invoices/operations/mark-invoiced', [AccountingInvoiceOperationController::class, 'markInvoiced'])->name('accounting-invoices.operations.mark-invoiced');
+        Route::get('/accounting-invoices/operations/next-reference', [AccountingInvoiceOperationController::class, 'nextReference'])->name('accounting-invoices.operations.next-reference');
+        Route::get('/accounting-invoices/operations/bl/{bl}/unbilled', [AccountingInvoiceOperationController::class, 'blUnbilled'])->name('accounting-invoices.operations.bl-unbilled');
+        Route::get('/accounting-invoices/operations/customer/{customer}/eligible-bls', [AccountingInvoiceOperationController::class, 'customerEligibleBls'])->name('accounting-invoices.operations.customer-eligible-bls');
+        Route::get('/accounting-invoices/operations/{accountingInvoiceField}/edit', [AccountingInvoiceOperationController::class, 'edit'])->name('accounting-invoices.operations.edit');
+        Route::put('/accounting-invoices/operations/{accountingInvoiceField}', [AccountingInvoiceOperationController::class, 'update'])->name('accounting-invoices.operations.update');
 
         Route::get('/accounting-invoice-labels', [AccountingInvoiceLabelController::class, 'index'])->name('accounting-invoice-labels.index');
         Route::get('/accounting-invoice-labels/data', [AccountingInvoiceLabelController::class, 'data'])->name('accounting-invoice-labels.data');
@@ -215,6 +243,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/accounting-invoice-field-regulars', [AccountingInvoiceFieldRegularController::class, 'store'])->name('accounting-invoice-field-regulars.store');
         Route::put('/accounting-invoice-field-regulars/{accountingInvoiceFieldRegular}', [AccountingInvoiceFieldRegularController::class, 'update'])->name('accounting-invoice-field-regulars.update');
         Route::delete('/accounting-invoice-field-regulars/{accountingInvoiceFieldRegular}', [AccountingInvoiceFieldRegularController::class, 'destroy'])->name('accounting-invoice-field-regulars.destroy');
+
+        Route::get('/proforma-invoices', [ProformaInvoiceController::class, 'index'])->name('proforma-invoices.index');
+        Route::get('/proforma-invoices/data', [ProformaInvoiceController::class, 'data'])->name('proforma-invoices.data');
+        Route::get('/proforma-invoices/create', [ProformaInvoiceController::class, 'create'])->name('proforma-invoices.create');
+        Route::post('/proforma-invoices', [ProformaInvoiceController::class, 'store'])->name('proforma-invoices.store');
+        Route::get('/proforma-invoices/{proformaInvoice}/edit', [ProformaInvoiceController::class, 'edit'])->name('proforma-invoices.edit');
+        Route::put('/proforma-invoices/{proformaInvoice}', [ProformaInvoiceController::class, 'update'])->name('proforma-invoices.update');
+        Route::delete('/proforma-invoices/{proformaInvoice}', [ProformaInvoiceController::class, 'destroy'])->name('proforma-invoices.destroy');
     });
 
     Route::middleware('has.level:Edition')->group(function () {

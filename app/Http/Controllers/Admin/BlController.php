@@ -157,11 +157,29 @@ class BlController extends Controller
 
     public function edit(Bl $bl): View
     {
+        $containers = $bl->containers()->orderBy('numero')->get();
+
         return view('admin.bls.edit', $this->formData() + [
             'bl' => $bl,
-            'containers' => $bl->containers()->orderBy('numero')->get(),
+            'containers' => $containers,
+            'containerSizeTotals' => $this->containerSizeTotals($containers),
             'transferts' => $bl->transferts()->with('parentContainer')->orderByDesc('date_received')->get(),
         ]);
+    }
+
+    /**
+     * Regroupe les conteneurs par taille (20/40/45 pieds), déduite du préfixe
+     * numérique de `type_tc` (ex: "40HC", "20 DRY") faute de colonne dédiée.
+     */
+    private function containerSizeTotals(\Illuminate\Support\Collection $containers): \Illuminate\Support\Collection
+    {
+        return $containers
+            ->groupBy(function ($container) {
+                preg_match('/^\s*(\d{2})/', (string) $container->type_tc, $matches);
+
+                return isset($matches[1]) ? $matches[1].' pieds' : 'Autre';
+            })
+            ->map->count();
     }
 
     public function update(UpdateBlRequest $request, Bl $bl): RedirectResponse

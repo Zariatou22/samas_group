@@ -24,6 +24,16 @@
                         </tr>
                     </thead>
                     <tbody></tbody>
+                    <tfoot class="thead-dark">
+                        <tr>
+                            <th class="text-center align-middle">TOTAL</th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-center align-middle"></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -37,6 +47,14 @@
                 ajax: '{{ route('admin.customers.data') }}',
                 dataSrc: 'data',
                 language: { url: '{{ asset('vendor/able/assets/json/datatable/fr-FR.json') }}' },
+                footerCallback: function () {
+                    const api = this.api();
+                    const rowCount = api.rows({search: 'applied'}).count();
+                    const totalCompanies = api.rows({search: 'applied'}).data().toArray()
+                        .reduce((a, row) => a + (Array.isArray(row.companies) ? row.companies.length : 0), 0);
+                    $(api.column(1).footer()).html(rowCount ? rowCount : '-');
+                    $(api.column(3).footer()).html(totalCompanies ? totalCompanies : '-');
+                },
                 columns: [
                     {data: (d) => `<a href="/admin/customers/${d.id}/edit">${d.customer_name}</a>`},
                     {data: (d) => d.customer_contact ?? '-'},

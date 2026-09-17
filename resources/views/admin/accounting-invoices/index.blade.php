@@ -6,6 +6,7 @@
     <p>
         <a href="{{ route('admin.home') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
         <a href="{{ route('admin.accounting-invoices.create') }}" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Nouvelle facture</a>
+        <a href="{{ route('admin.accounting-invoices.operations.unbilled') }}" class="btn btn-outline-warning"><i class="fa fa-exclamation-circle"></i> Opérations non facturées</a>
         <a href="{{ route('admin.accounting-invoice-labels.index') }}" class="btn btn-outline-secondary"><i class="fa fa-tags"></i> Libellés</a>
         <a href="{{ route('admin.accounting-invoice-field-regulars.index') }}" class="btn btn-outline-secondary"><i class="fa fa-list"></i> Champs récurrents</a>
     </p>
@@ -47,6 +48,7 @@
                     {data: (d) => Number(d.amount_ttc ?? 0).toFixed(2)},
                     {data: (d) => `
                         <a href="/admin/accounting-invoices/${d.id}/edit" class="btn btn-sm btn-primary" title="Modifier"><i class="fa fa-edit"></i></a>
+                        <a href="/admin/accounting-invoices/${d.id}/print" class="btn btn-sm btn-secondary" title="Imprimer" target="_blank"><i class="fa fa-print"></i></a>
                         <form method="POST" action="/admin/accounting-invoices/${d.id}" class="d-inline" onsubmit="return confirm('Archiver cette facture ?')">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="DELETE">

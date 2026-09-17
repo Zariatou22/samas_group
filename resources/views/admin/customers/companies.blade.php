@@ -44,6 +44,7 @@
                                 <td class="text-center">
                                     <a href="{{ route('admin.customers.edit', $customer) }}#clients" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="fa fa-edit"></i></a>
                                     <a href="{{ route('admin.customers.transfer.form', $customer) }}" class="btn btn-sm btn-warning" title="Transférer"><i class="fa fa-exchange"></i></a>
+                                    <a href="{{ route('admin.customers.documents.index', $customer) }}?company={{ $company->id }}" class="btn btn-sm btn-secondary" title="Documents"><i class="fa fa-folder-open"></i></a>
                                     <form method="POST" action="{{ route('admin.customers.companies.destroy', [$customer, $company]) }}" class="d-inline" onsubmit="return confirm('Archiver ce client ?')">
                                         @csrf
                                         @method('DELETE')

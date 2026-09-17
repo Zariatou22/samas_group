@@ -1,0 +1,49 @@
+/* line 1, ../sass/preload.scss */
+.preloader {
+  position: relative;
+  height: 75px;
+  width: 75px;
+  margin: 50px auto 0;
+}
+
+/* line 7, ../sass/preload.scss */
+.spinner {
+  width: 75px;
+  height: 75px;
+  margin: 0;
+  border-top: 10px solid #ff3f34;
+  box-shadow: 4px 4px 5px #d2d2d2 inset;
+  border-right: 10px solid transparent;
+  border-radius: 50%;
+  animation: 1.5s spin linear infinite;
+}
+
+/* line 17, ../sass/preload.scss */
+.spinner-2 {
+  width: 75px;
+  height: 75px;
+  margin: 0;
+  border-top: 10px solid #0fbcf9;
+  border-left: 10px solid transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  animation: 1.5s spin-2 linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-2 {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}

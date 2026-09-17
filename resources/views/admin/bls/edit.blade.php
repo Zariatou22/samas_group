@@ -49,8 +49,13 @@
                                 <td>{{ $container->nb_package }}</td>
                                 <td>{{ $container->quantity }}</td>
                                 <td>
+                                    @php
+                                        $containerData = $container->only(['id', 'type_tc', 'numero', 'ship', 'lead_number', 'product_type', 'nb_package', 'quantity']);
+                                        $containerData['eta'] = optional($container->eta)->format('Y-m-d');
+                                    @endphp
                                     <button type="button" class="btn btn-sm btn-outline-primary" title="Modifier"
-                                        onclick='openContainerModal(@json($container->only(["id", "type_tc", "numero", "ship", "lead_number", "product_type", "nb_package", "quantity"]) + ["eta" => optional($container->eta)->format("Y-m-d")]))'>
+                                        data-toggle="modal" data-target="#containerModal"
+                                        onclick='openContainerModal(@json($containerData))'>
                                         <i class="fa fa-edit"></i>
                                     </button>
                                     <form method="POST" action="{{ route('admin.bls.containers.destroy', [$bl, $container]) }}" class="d-inline" onsubmit="return confirm('Supprimer ce conteneur ?')">
@@ -64,6 +69,17 @@
                             <tr><td colspan="7" class="text-center">Aucun conteneur.</td></tr>
                         @endforelse
                     </tbody>
+                    @if ($containers->isNotEmpty())
+                        <tfoot>
+                            <tr>
+                                <th colspan="7">
+                                    @foreach ($containerSizeTotals as $label => $count)
+                                        <span class="mr-3">Total conteneurs {{ $label }} : {{ $count }}</span>
+                                    @endforeach
+                                </th>
+                            </tr>
+                        </tfoot>
+                    @endif
                 </table>
             </div>
         </div>

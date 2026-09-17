@@ -1,0 +1,10 @@
+/* line 1, ../sass/lang.scss */
+[contenteditable] {
+  outline: 0px solid transparent;
+}
+
+/* line 4, ../sass/lang.scss */
+.editTrans {
+  border: solid 1px #c7c7c7;
+  padding: 10px 15px;
+}

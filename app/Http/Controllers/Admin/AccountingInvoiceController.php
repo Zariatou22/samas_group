@@ -7,6 +7,7 @@ use App\Models\AccountingInvoice;
 use App\Models\AccountingInvoiceField;
 use App\Models\AccountingInvoiceFieldRegular;
 use App\Models\AccountingInvoiceLabel;
+use App\Models\Bl;
 use App\Models\Customer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -43,6 +44,7 @@ class AccountingInvoiceController extends Controller
             'labels' => AccountingInvoiceLabel::query()->orderBy('name')->get(),
             'nextReference' => AccountingInvoice::nextReference(),
             'regularFields' => AccountingInvoiceFieldRegular::query()->get(),
+            'bls' => Bl::query()->orderByDesc('id')->get(['id', 'bl', 'customer']),
         ]);
     }
 
@@ -55,6 +57,7 @@ class AccountingInvoiceController extends Controller
             'fees' => ['nullable', 'numeric', 'min:0'],
             'vat' => ['nullable', 'numeric', 'min:0'],
             'fields' => ['nullable', 'array'],
+            'fields.*.bl' => ['nullable', 'exists:bl,id'],
             'fields.*.label' => ['nullable', 'exists:accounting_invoice_labels,id'],
             'fields.*.unit_price' => ['required', 'numeric', 'min:0'],
             'fields.*.quantity' => ['required', 'numeric', 'min:1'],
@@ -86,6 +89,7 @@ class AccountingInvoiceController extends Controller
             'invoice' => $accountingInvoice->load('fields'),
             'customers' => Customer::query()->orderBy('customer_name')->get(),
             'labels' => AccountingInvoiceLabel::query()->orderBy('name')->get(),
+            'bls' => Bl::query()->orderByDesc('id')->get(['id', 'bl', 'customer']),
         ]);
     }
 
@@ -98,6 +102,7 @@ class AccountingInvoiceController extends Controller
             'fees' => ['nullable', 'numeric', 'min:0'],
             'vat' => ['nullable', 'numeric', 'min:0'],
             'fields' => ['nullable', 'array'],
+            'fields.*.bl' => ['nullable', 'exists:bl,id'],
             'fields.*.label' => ['nullable', 'exists:accounting_invoice_labels,id'],
             'fields.*.unit_price' => ['required', 'numeric', 'min:0'],
             'fields.*.quantity' => ['required', 'numeric', 'min:1'],
@@ -129,6 +134,50 @@ class AccountingInvoiceController extends Controller
         return back()->with('success', 'Facture client archivée.');
     }
 
+    /**
+     * Impression de la facture : regroupe les lignes par BL (sous-total par
+     * BL affiché dans la colonne TOTAL de l'en-tête de groupe) quand la
+     * facture couvre plusieurs BL, comme côté CodeIgniter
+     * (Invoice::operation_print()).
+     */
+    public function print(AccountingInvoice $accountingInvoice): View
+    {
+        $accountingInvoice->load(['mandataire', 'fields.parentBl.customerCompany', 'fields.accountingLabel']);
+
+        $blGroups = $accountingInvoice->fields
+            ->groupBy(fn (AccountingInvoiceField $field) => $field->bl ?? 0)
+            ->map(function ($fields) {
+                $firstBl = $fields->first()->parentBl;
+
+                return (object) [
+                    'bl_name' => $firstBl?->bl,
+                    'fields' => $fields,
+                    'subtotal' => $fields->sum('amount'),
+                ];
+            })
+            ->values();
+
+        $firstCompanyName = $accountingInvoice->fields
+            ->map(fn (AccountingInvoiceField $field) => $field->parentBl?->customerCompany?->name)
+            ->filter()
+            ->first();
+
+        $formatter = new \NumberFormatter('fr', \NumberFormatter::SPELLOUT);
+
+        $moisFr = [1 => 'janvier', 2 => 'février', 3 => 'mars', 4 => 'avril', 5 => 'mai', 6 => 'juin', 7 => 'juillet', 8 => 'août', 9 => 'septembre', 10 => 'octobre', 11 => 'novembre', 12 => 'décembre'];
+        $dateIssued = $accountingInvoice->date_issued;
+        $dateFacture = $dateIssued ? $dateIssued->day.' '.$moisFr[$dateIssued->month].' '.$dateIssued->year : '';
+
+        return view('admin.accounting-invoices.print', [
+            'invoice' => $accountingInvoice,
+            'bl_groups' => $blGroups,
+            'customer_name' => $firstCompanyName ?: $accountingInvoice->mandataire?->customer_name,
+            'mandataire_name' => $accountingInvoice->mandataire?->customer_name,
+            'date_facture' => $dateFacture,
+            'amount_words' => ucfirst(trim($formatter->format((int) $accountingInvoice->amount_ttc))),
+        ]);
+    }
+
     private function syncFields(AccountingInvoice $invoice, array $fields): void
     {
         $invoice->fields()->delete();
@@ -137,6 +186,7 @@ class AccountingInvoiceController extends Controller
             AccountingInvoiceField::create([
                 'user' => auth()->id(),
                 'invoice' => $invoice->id,
+                'bl' => $field['bl'] ?: null,
                 'label' => $field['label'] ?: null,
                 'unit_price' => $field['unit_price'],
                 'quantity' => $field['quantity'],

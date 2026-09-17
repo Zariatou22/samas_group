@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-md-4 form-group">
                         <label>N&deg;BL/TC</label>
-                        <input type="text" id="blDisplay" class="form-control" value="{{ $receipt->parentBl?->bl }}" disabled>
+                        <input type="text" id="blDisplay" class="form-control" value="{{ trim(($receipt->parentBl?->bl ?? '').($containerNumbers ? ' / '.$containerNumbers : '')) }}" disabled>
                         <input type="hidden" name="bl" id="blInput" value="{{ old('bl', $receipt->bl) }}">
                     </div>
                     <div class="col-md-4 form-group">
@@ -186,7 +186,7 @@
                 .then((data) => {
                     document.getElementById('carDisplay').value = data.car?.full_registration ?? '';
                     document.getElementById('carInput').value = data.car?.id ?? '';
-                    document.getElementById('blDisplay').value = data.bl?.bl ?? '';
+                    document.getElementById('blDisplay').value = data.bl ? (data.bl.bl + (data.bl.containers ? ' / ' + data.bl.containers : '')) : '';
                     document.getElementById('blInput').value = data.bl?.id ?? '';
                 });
         }

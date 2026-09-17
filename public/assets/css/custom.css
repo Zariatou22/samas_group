@@ -1,0 +1,261 @@
+/* line 2, ../sass/custom.scss */
+#loadInput {
+  position: relative;
+}
+
+/* line 5, ../sass/custom.scss */
+.input-wait {
+  position: absolute;
+  top: 35px;
+  left: 100px;
+}
+
+/* line 10, ../sass/custom.scss */
+.action-td {
+  visibility: hidden;
+}
+
+/* line 13, ../sass/custom.scss */
+.lang-icon {
+  padding-top: 3px;
+}
+
+/* line 17, ../sass/custom.scss */
+#akfolders .subdir {
+  margin-left: 15px;
+}
+
+/* line 21, ../sass/custom.scss */
+#launePreview {
+  height: 90px;
+  width: 155px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border: dashed 2px #CDCDCD;
+  position: relative;
+}
+/* line 29, ../sass/custom.scss */
+#launePreview .remove-laune {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  cursor: pointer;
+}
+/* line 34, ../sass/custom.scss */
+#launePreview .remove-laune .fa {
+  background: #fff;
+}
+
+/* line 39, ../sass/custom.scss */
+.product-illustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  height: 90px;
+  width: 155px;
+  border: dashed 2px #CDCDCD;
+}
+/* line 47, ../sass/custom.scss */
+.product-illustration a {
+  display: block;
+  text-decoration: none;
+}
+/* line 51, ../sass/custom.scss */
+.product-illustration .fa {
+  cursor: pointer;
+}
+/* line 54, ../sass/custom.scss */
+.product-illustration .remove-laune {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  cursor: pointer;
+}
+/* line 59, ../sass/custom.scss */
+.product-illustration .remove-laune .fa {
+  background: #fff;
+}
+
+/* line 65, ../sass/custom.scss */
+.event-file .remove-file {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* line 73, ../sass/custom.scss */
+.load-file {
+  display: block;
+  width: 100%;
+  border: solid 1px #ccc;
+  line-height: 40px;
+  height: 40px;
+  border-radius: 5px;
+  color: inherit;
+  font-size: 1.2em;
+}
+/* line 82, ../sass/custom.scss */
+.load-file:hover, .load-file:active, .load-file:active {
+  color: inherit;
+}
+/* line 85, ../sass/custom.scss */
+.load-file div {
+  float: left;
+}
+/* line 88, ../sass/custom.scss */
+.load-file .input {
+  width: 80%;
+  height: 100%;
+  padding: 0 15px;
+}
+/* line 93, ../sass/custom.scss */
+.load-file .addon {
+  width: 20%;
+  text-align: center;
+  background-color: #DEDEDE;
+}
+
+/* line 101, ../sass/custom.scss */
+.edit-langs a img {
+  opacity: 0.2;
+}
+/* line 104, ../sass/custom.scss */
+.edit-langs a.edit-active-lang img, .edit-langs a:hover img, .edit-langs a:active img, .edit-langs a:focus img {
+  opacity: 1;
+  -moz-transition: ease 0.5s opacity;
+  -o-transition: ease 0.5s opacity;
+  -webkit-transition: ease 0.5s opacity;
+  transition: ease 0.5s opacity;
+}
+
+/* line 110, ../sass/custom.scss */
+.top-post {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+/* line 114, ../sass/custom.scss */
+.top-post li {
+  float: left;
+  border-right: solid 2px #8C8C8C;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+/* line 119, ../sass/custom.scss */
+.top-post li:last-child {
+  border-right: none;
+}
+/* line 122, ../sass/custom.scss */
+.top-post li:first-child {
+  padding-left: 0;
+}
+.dataTables_wrapper td,
+.dataTables_wrapper th {
+    vertical-align: middle;
+    text-align: center;
+}
+.dataTables_wrapper td.align-left, .dataTables_wrapper th.align-left {
+  text-align: left;
+}
+.status-failure {
+    background-color: #f2dede !important;
+}
+.status-success {
+    background-color: #dff0d8 !important;
+}
+.status-pending {
+    background-color: #fcf8e3 !important;
+}
+.input-loader {
+  display: block;
+  position: absolute;
+  top: 37px;
+  left: 190px;
+}
+.no-select {
+  user-select: none;
+  --webkit-user-select: none;
+}
+.cursor-point {
+  cursor: pointer;
+}
+.text-navy {
+  color: #000080;
+}
+/* Orange franc (bg-warning du thème est en fait un jaune/ambre) */
+.card-body.bg-orange, .card-header.bg-orange, .card-header-icon.bg-orange {
+  background: #fd7e14;
+  color: #FFF;
+}
+.bg-orange .widget-summary .summary .title, .bg-orange .widget-summary .summary .amount {
+  color: #FFF !important;
+}
+.bg-orange .widget-summary .summary-icon {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.bg-orange .widget-summary .summary-footer {
+  border-top: 1px solid #fff;
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+.bg-orange .widget-summary .summary-footer a {
+  color: #FFF;
+  opacity: 0.6;
+}
+/* Cartes "BL en attente" en teintes légères (même couleur que le fond du tableau ci-dessous) */
+.card-body.bg-light-yellow, .card-header.bg-light-yellow, .card-header-icon.bg-light-yellow {
+  background: #ffe38f;
+  color: #212529;
+}
+.bg-light-yellow .widget-summary .summary .title, .bg-light-yellow .widget-summary .summary .amount {
+  color: #212529 !important;
+}
+.bg-light-yellow .widget-summary .summary-icon {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.card-body.bg-light-blue, .card-header.bg-light-blue, .card-header-icon.bg-light-blue {
+  background: #8cc9e8;
+  color: #212529;
+}
+.bg-light-blue .widget-summary .summary .title, .bg-light-blue .widget-summary .summary .amount {
+  color: #212529 !important;
+}
+.bg-light-blue .widget-summary .summary-icon {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+/* Carte-filtre active (ex: cartes cliquables de la page Franchise) */
+.card-filter-active {
+  box-shadow: 0 0 0 3px #333 inset;
+}
+/* Fond du tableau "BL en attente" quand le filtre ETA <= 3 jours (carte jaune) est actif :
+   même couleur légère que la carte (.bg-light-yellow) */
+.table-filter-orange tbody tr {
+  background-color: #ffe38f !important;
+  color: #212529;
+}
+/* Fond du tableau "BL en attente" quand la carte bleue (Total) est active :
+   même couleur légère que la carte (.bg-light-blue) */
+.table-filter-blue tbody tr {
+  background-color: #8cc9e8 !important;
+  color: #212529;
+}
+/* Police réduite : tableau "Tous les BLS" (13px -> 12px) et cartes-résumé (Franchise, BL en attente) (-> 11px) */
+#allBl {
+  font-size: 12px;
+}
+.widget-summary.widget-summary-sm .summary .title,
+.widget-summary.widget-summary-sm .summary .amount,
+.widget-summary.widget-summary-sm .summary .info {
+  font-size: 11px;
+}
+/* Cartes mandataires de "Factures prestataires" */
+.mandataire-card, .mandataire-card .card-body {
+  background-color: #a8d8f0;
+  transition: background-color 0.15s ease;
+}
+.mandataire-card:hover, .mandataire-card:hover .card-body {
+  background-color: #92cbec;
+}

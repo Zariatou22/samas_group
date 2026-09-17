@@ -1,0 +1,126 @@
+@import 'compass';
+#loadInput {
+  position: relative;
+}
+.input-wait {
+  position: absolute;
+  top: 35px;
+  left: 100px;
+}
+.action-td {
+  visibility: hidden;
+}
+.lang-icon{
+	padding-top: 3px;
+}
+#akfolders{
+	.subdir{
+		margin-left: 15px;
+	}
+}
+#launePreview{
+	height: 90px;
+	width: 155px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	border: dashed 2px #CDCDCD;
+	position: relative;
+	.remove-laune{
+		position: absolute;
+		top: -10px;
+		right: -10px;
+		cursor: pointer;
+		.fa{
+			background: #fff;
+		}
+	}
+}
+.product-illustration{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+	height: 90px;
+	width: 155px;
+	border: dashed 2px #CDCDCD;
+	a{
+		display: block;
+		text-decoration: none;
+	}
+	.fa{
+		cursor: pointer;
+	}
+	.remove-laune{
+		position: absolute;
+		top: -5px;
+		right: 0;
+		cursor: pointer;
+		.fa{
+			background: #fff;
+		}
+	}
+}
+.event-file{
+	.remove-file{
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		cursor: pointer;
+	}
+}
+.load-file{
+	display: block;
+	width: 100%;
+	border: solid 1px #ccc;
+	line-height: 40px;
+	height: 40px;
+	border-radius: 5px;
+	color: inherit;
+	font-size: 1.2em;
+	&:hover, &:active, &:active{
+		color: inherit;
+	}
+	div{
+		float: left;
+	}
+	.input{
+		width: 80%;
+		height: 100%;
+		padding: 0 15px;
+	}
+	.addon{
+		width: 20%;
+		text-align: center;
+		background-color: #DEDEDE;
+	}
+}
+.edit-langs{
+	a{
+		img{
+			opacity: 0.2;
+		}
+		&.edit-active-lang img, &:hover img, &:active img, &:focus img{
+			opacity: 1;
+			@include transition(ease .5s opacity);
+		}
+	}
+}
+.top-post{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	li{
+		float: left;
+		border-right: solid 2px #8C8C8C;
+		padding-left: 10px;
+		padding-right: 10px;
+		&:last-child{
+			border-right: none;
+		}
+		&:first-child{
+			padding-left: 0;
+		}
+	}
+}

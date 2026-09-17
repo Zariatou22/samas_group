@@ -78,6 +78,8 @@
         table.lines th, table.lines td {
             border: 1px solid #000;
             padding: 8px;
+            font-weight: bold;
+            color: #000;
         }
         table.lines th {
             text-align: center;
@@ -91,11 +93,10 @@
         }
         table.lines td.unit-price, table.lines th.unit-price,
         table.lines td.amount, table.lines th.amount {
-            text-align: right;
+            text-align: center;
             width: 21%;
         }
         table.lines td.payment-line {
-            padding-left: 40%;
             text-align: left;
         }
         .closing-fields {
@@ -105,6 +106,13 @@
             border-bottom: 1px dotted #000;
             padding: 4px 0;
             margin-bottom: 6px;
+        }
+        .nb {
+            margin-top: 20px;
+            padding: 8px 10px;
+            border: 1px solid #000;
+            font-size: 15px;
+            font-weight: bold;
         }
         .signatures {
             display: flex;
@@ -140,7 +148,7 @@
     <div class="fields">
         <div><span class="label">Nom et contacts du chauffeur :</span> {{ $receipt->carDriver?->name }}{{ $receipt->carDriver?->contact ? ' — '.$receipt->carDriver->contact : '' }}</div>
         <div><span class="label">N° du camion :</span> {{ $receipt->vehicle?->full_registration }}</div>
-        <div><span class="label">N°BL/TC :</span> {{ $receipt->parentBl?->bl }}</div>
+        <div><span class="label">N°BL/TC :</span> {{ trim(($receipt->parentBl?->bl ?? '').($containerNumbers ? ' / '.$containerNumbers : '')) }}</div>
         <div><span class="label">Nom et contact du client :</span> {{ $receipt->contact_client }}</div>
         <div><span class="label">Nom et contact du transitaire Cincassé :</span> {{ $receipt->contact_transitaire }}</div>
         <div><span class="label">Destination :</span> {{ $receipt->destination }}</div>
@@ -165,10 +173,12 @@
                 </tr>
             @endforeach
             <tr>
-                <td colspan="4" class="payment-line">Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
+                <td class="designation"></td>
+                <td colspan="3" class="payment-line">Avance reçu : {{ $receipt->avance_recu !== null ? number_format($receipt->avance_recu, 2, ',', ' ') : '' }}</td>
             </tr>
             <tr>
-                <td colspan="4" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
+                <td class="designation"></td>
+                <td colspan="3" class="payment-line">Reste à payer : {{ $receipt->reste_a_payer !== null ? number_format($receipt->reste_a_payer, 2, ',', ' ') : '' }}</td>
             </tr>
         </tbody>
     </table>
@@ -176,6 +186,13 @@
     <div class="closing-fields">
         <div>Arrêté le présent reçu à la somme de : {{ $receipt->arrete_somme }}</div>
         <div>Reste à payer à destination : {{ $receipt->reste_a_payer_destination }}</div>
+    </div>
+
+    <div class="nb">
+        NB : Le chauffeur est tenu de donner un numéro WhatsApp fiable sur lequel on peut le joindre à tout moment ; faute de quoi, sa responsabilité sera engagée en cas de surestarie ou détention.<br>
+        Il est tenu de nous informer de ses traversées aux frontières (aller comme retour).<br>
+        Il doit également nous viser une fois qu'il décharge à destination.<br>
+        Numéro à contacter : (+228) 72.27.22.83
     </div>
 
     <div class="signatures">

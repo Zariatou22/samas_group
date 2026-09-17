@@ -23,11 +23,17 @@ class CustomerCompanyController extends Controller
         ]);
     }
 
+    /**
+     * Fiche client : les documents RCCM/NIF/CNI déjà uploadés pour ce client
+     * sont listés en ligne (repliables) sous chaque numéro, comme
+     * customer/company en CI (Customer::company()).
+     */
     public function show(Customer $customer, CustomerCompany $company): View
     {
         return view('admin.customers.company', [
             'customer' => $customer,
             'company' => $company,
+            'files' => $customer->documents()->where('company', $company->id)->orderByDesc('id')->get(),
         ]);
     }
 

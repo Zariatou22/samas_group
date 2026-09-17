@@ -1,242 +1,119 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="no-js fixed sidebar-left-collapsed sidebar-left-with-menu">
+
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Accueil') - SAMAS Groupe</title>
-    <link rel="icon" href="{{ asset('favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Accueil') - Administration</title>
+    <meta name="robots" content="noindex, nofollow">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/pages/waves/css/waves.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/css/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/icon/themify-icons/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/icon/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/css/jquery.mCustomScrollbar.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/able/assets/css/style.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('assets/favicon/manifest.json') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon/favicon.ico') }}" type="image/x-icon">
 
-    <style>
-        /* Sous-menus pliables : le comportement natif du template (3D flip /
-           flyout absolu) n'est utilisé que pour la sidebar réduite ; en mode
-           déplié on affiche un accordéon simple, plus fiable que d'essayer
-           d'adapter le système de classes/attributs du template. */
-        #pcoded:not([vertical-nav-type="collapsed"]) .pcoded-navbar .pcoded-hasmenu > .pcoded-submenu {
-            display: none;
-            position: static;
-            opacity: 1;
-            visibility: visible;
-            width: 100%;
-            margin: 5px 0 0;
-            transform: none;
-        }
-        #pcoded:not([vertical-nav-type="collapsed"]) .pcoded-navbar .pcoded-hasmenu.sidebar-open > .pcoded-submenu {
-            display: block;
-        }
-        #pcoded:not([vertical-nav-type="collapsed"]) .pcoded-navbar .pcoded-hasmenu > a {
-            cursor: pointer;
-        }
-        .pcoded-navbar .sidebar-caret {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            transition: transform 0.25s ease;
-        }
-        .pcoded-hasmenu.sidebar-open > a > .sidebar-caret {
-            transform: translateY(-50%) rotate(90deg);
-        }
-
-        /* Effet de survol des liens de la sidebar (même esprit que les cartes
-           de la page d'accueil : légère élévation + icône qui grossit). */
-        .pcoded-navbar .pcoded-item > li > a,
-        .pcoded-navbar .pcoded-submenu > li > a {
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
-        }
-        .pcoded-navbar .pcoded-item > li > a:hover,
-        .pcoded-navbar .pcoded-submenu > li > a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            border-radius: 6px;
-        }
-        .pcoded-navbar .pcoded-micon i {
-            transition: transform 0.2s ease-out;
-            display: inline-block;
-        }
-        .pcoded-navbar .pcoded-item > li > a:hover .pcoded-micon i {
-            transform: scale(1.2);
-        }
-
-        /* Espacement entre le header et le début du contenu de la sidebar,
-           pour ne pas coller le premier menu directement sous le header. */
-        .pcoded-navbar .pcoded-inner-navbar {
-            padding-top: 18px;
-        }
-
-        /* Sous-menus : chevron au lieu d'une icône métier, aligné avec le
-           texte des menus parents (même colonne que l'icône 30px + marge
-           du niveau supérieur, cf. .pcoded-item > li > a > .pcoded-micon). */
-        .pcoded-navbar .pcoded-submenu > li > a {
-            display: flex;
-            align-items: center;
-            padding-left: 60px !important;
-        }
-        .pcoded-navbar .pcoded-submenu > li > a > .pcoded-submenu-caret {
-            position: absolute;
-            left: 22px;
-            top: 50%;
-            width: auto;
-            height: auto;
-            padding: 0;
-            margin: 0;
-            font-size: 10px;
-            opacity: 0.5;
-            transform: translateY(-50%);
-        }
-        .pcoded-navbar .pcoded-submenu > li > a:hover > .pcoded-submenu-caret,
-        .pcoded-navbar .pcoded-submenu > li.active > a > .pcoded-submenu-caret {
-            opacity: 1;
-        }
-        .pcoded-navbar .pcoded-submenu > li > a:hover .pcoded-submenu-caret i {
-            transform: translateY(-2px);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light"
+        rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome5.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery-confirm.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datepicker3.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/skins/default.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/skins/extension.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/theme-admin-extension.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fixedHeader.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/colReorder.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 
     @stack('styles')
+
+    <script type="text/javascript" src="{{ asset('assets/js/modernizr.js') }}"></script>
 </head>
+
 <body>
-    <div id="pcoded" class="pcoded">
-        <div class="pcoded-overlay-box"></div>
-        <div class="pcoded-container navbar-wrapper">
-            @include('layouts.partials.header')
-
-            <div class="pcoded-main-container">
-                <div class="pcoded-wrapper">
-                    @include('layouts.partials.sidebar')
-
-                    <div class="pcoded-content">
-                        <div class="page-header">
-                            <div class="page-block">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <div class="page-header-title">
-                                            <h5 class="m-b-10">@yield('title', 'Accueil')</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pcoded-inner-content">
-                            <div class="main-body">
-                                <div class="page-wrapper">
-                                    <div class="page-body">
-                                        @if (session('success'))
-                                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                {{ session('success') }}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            </div>
-                                        @endif
-                                        @if (session('error'))
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                {{ session('error') }}
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            </div>
-                                        @endif
-                                        @if ($errors->any())
-                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                                <ul class="mb-0">
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-                                                </ul>
-                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            </div>
-                                        @endif
-
-                                        @yield('content')
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="preloader">
+        <div class="spinner"></div>
+        <div class="spinner-2"></div>
     </div>
 
-    <script>
-        window.vLayout = {
-            NavbarBackground: 'themelight1',
-            FixedHeaderPosition: true,
-            collapseVerticalLeftHeader: true,
-            onLayoutChange: { desktop: 'expanded', tablet: 'collapsed', phone: 'offcanvas' },
-            onToggleVerticalMenu: { desktop: 'collapsed', tablet: 'expanded', phone: 'expanded' },
-        };
-    </script>
+    <section class="body">
+        @include('layouts.partials.header')
 
-    <script src="{{ asset('vendor/able/assets/js/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/popper.js/popper.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/pages/waves/js/waves.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/modernizr/modernizr.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/SmoothScroll.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/moment.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/pcoded.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/vertical-layout.min.js') }}"></script>
-    <script src="{{ asset('vendor/able/assets/js/script.js') }}"></script>
+        <div class="inner-wrapper">
+            @include('layouts.partials.sidebar')
 
-    <script>
-        // Persistance de l'état réduit/déplié de la sidebar entre les pages
-        // (le template stock ne le fait pas — cf. plan).
-        (function () {
-            const KEY = 'sidebarCollapsed';
-            const pcoded = document.getElementById('pcoded');
+            <section role="main" class="content-body">
+                <header class="page-header">
+                    <h2>@yield('title', 'Accueil')</h2>
+                </header>
 
-            function applyCollapsed(collapsed) {
-                pcoded.setAttribute('vertical-nav-type', collapsed ? 'collapsed' : 'expanded');
-            }
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                @endif
 
-            applyCollapsed(localStorage.getItem(KEY) === '1');
+                @yield('content')
+            </section>
+        </div>
+    </section>
 
-            document.querySelectorAll('.sidebar_toggle a, #mobile-collapse').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    setTimeout(function () {
-                        const isCollapsed = pcoded.getAttribute('vertical-nav-type') === 'collapsed';
-                        localStorage.setItem(KEY, isCollapsed ? '1' : '0');
-                    }, 50);
-                });
-            });
-        })();
-
-        // Pliage/dépliage des sous-menus de la sidebar (un seul groupe ouvert
-        // à la fois) — la section correspondant à la page courante est déjà
-        // ouverte par défaut via la classe "sidebar-open" côté serveur.
-        (function () {
-            document.querySelectorAll('.pcoded-navbar .pcoded-hasmenu > a').forEach(function (trigger) {
-                trigger.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const parent = trigger.parentElement;
-                    const wasOpen = parent.classList.contains('sidebar-open');
-
-                    document.querySelectorAll('.pcoded-navbar .pcoded-hasmenu.sidebar-open').forEach(function (li) {
-                        if (li !== parent) {
-                            li.classList.remove('sidebar-open');
-                        }
-                    });
-
-                    parent.classList.toggle('sidebar-open', !wasOpen);
-                });
-            });
-        })();
-    </script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-3.5.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-confirm.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.browser.mobile.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/bootstrap-datepicker.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/bootstrap-datepicker.fr.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/common.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/nanoscroller.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/ios7-switch.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.ui.touch-punch.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.appear.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/pnotify.custom.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/isotope.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/boxes.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/dataTables.fixedHeader.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/dataTables.colReorder.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/datatables.init.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/moment.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/theme.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/theme.init.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/utils.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/number.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/dialogs.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/admin.js') }}"></script>
 
     @stack('scripts')
 </body>
+
 </html>

@@ -1,0 +1,14 @@
+.dataTables_wrapper td,
+.dataTables_wrapper th {
+    vertical-align: middle;
+    text-align: center;
+}
+.status-failure {
+    background-color: #f2dede !important; /* Use !important to override DataTables default styling */
+}
+.status-success {
+    background-color: #dff0d8 !important;
+}
+.status-pending {
+    background-color: #fcf8e3 !important;
+}

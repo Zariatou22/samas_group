@@ -36,6 +36,17 @@
                         </tr>
                     </thead>
                     <tbody></tbody>
+                    <tfoot class="thead-dark">
+                        <tr>
+                            <th class="text-center align-middle">TOTAL</th>
+                            <th class="text-center align-middle"></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-center align-middle"></th>
+                            <th colspan="9"></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -50,6 +61,14 @@
                 dataSrc: 'data',
                 language: { url: '{{ asset('vendor/able/assets/json/datatable/fr-FR.json') }}' },
                 pageLength: 25,
+                footerCallback: function () {
+                    const api = this.api();
+                    const rowCount = api.rows({search: 'applied'}).count();
+                    const totalContainers = api.rows({search: 'applied'}).data().toArray()
+                        .reduce((a, row) => a + (row.containers_count || 0), 0);
+                    $(api.column(1).footer()).html(rowCount || '-');
+                    $(api.column(5).footer()).html(totalContainers || '-');
+                },
                 columns: [
                     {data: (d) => `<a href="/admin/bls/${d.id}/edit">${d.bl ?? '-'}</a>`},
                     {data: (d) => d.customer_name ?? '-'},

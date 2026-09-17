@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-md-4 form-group">
                         <label>Client *</label>
-                        <select name="customer" class="form-control" required>
+                        <select name="customer" id="customerSelect" class="form-control" required onchange="onCustomerChange()">
                             <option value="">Choisir...</option>
                             @foreach ($customers as $c)
                                 <option value="{{ $c->id }}" @selected(old('customer', $invoice->customer) == $c->id)>{{ $c->customer_name }}</option>
@@ -60,6 +60,7 @@
                     <table class="table table-bordered table-sm" id="fieldsTable">
                         <thead class="thead-dark">
                             <tr>
+                                <th style="width:160px">BL</th>
                                 <th>LIBELLÉ</th>
                                 <th style="width:150px">PRIX UNITAIRE</th>
                                 <th style="width:120px">QUANTITÉ</th>
@@ -81,7 +82,8 @@
 @push('scripts')
     <script>
         const availableLabels = @json($labels);
-        const existingFields = @json($invoice->fields->map(fn ($f) => ['label' => $f->label, 'unit_price' => $f->unit_price, 'quantity' => $f->quantity]));
+        const availableBls = @json($bls);
+        const existingFields = @json($invoice->fields->map(fn ($f) => ['bl' => $f->bl, 'label' => $f->label, 'unit_price' => $f->unit_price, 'quantity' => $f->quantity]));
         let fieldIndex = 0;
 
         function labelOptions(selected) {
@@ -92,11 +94,37 @@
             return html;
         }
 
+        function blOptions(selected) {
+            const customerId = document.getElementById('customerSelect').value;
+            let html = '<option value="">Choisir...</option>';
+            availableBls
+                .filter(b => !customerId || String(b.customer) === String(customerId))
+                .forEach(b => {
+                    html += `<option value="${b.id}" ${String(selected) === String(b.id) ? 'selected' : ''}>${b.bl}</option>`;
+                });
+            return html;
+        }
+
+        function onCustomerChange() {
+            document.querySelectorAll('#fieldsBody tr').forEach(row => {
+                const select = row.querySelector('select[name$="[bl]"]');
+                if (select) {
+                    const selected = select.value;
+                    select.innerHTML = blOptions(selected);
+                }
+            });
+        }
+
         function addFieldRow(field) {
             const i = fieldIndex++;
             const row = document.createElement('tr');
             row.id = `fieldRow${i}`;
             row.innerHTML = `
+                <td>
+                    <select name="fields[${i}][bl]" class="form-control">
+                        ${blOptions(field?.bl)}
+                    </select>
+                </td>
                 <td>
                     <select name="fields[${i}][label]" class="form-control" onchange="onFieldLabelChange(${i})">
                         ${labelOptions(field?.label)}

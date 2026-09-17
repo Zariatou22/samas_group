@@ -194,6 +194,22 @@ class Bl extends Model
     }
 
     /**
+     * Quantité déjà couverte par des chargements (type=0) ou des dépotages
+     * (type=1) : pools indépendants, comme Loads::get_available_bl($type)
+     * côté CodeIgniter — un dépotage ne consomme pas la capacité de
+     * chargement du même BL, et inversement.
+     */
+    public function loadedQuantityForType(int $type): float
+    {
+        return (float) $this->loadings()->where('type', $type)->sum('quantity');
+    }
+
+    public function availableForLoadingType(int $type): float
+    {
+        return max(0, $this->quantity - $this->loadedQuantityForType($type));
+    }
+
+    /**
      * En attente d'arrivée : aucun conteneur, ou au moins un conteneur dont
      * l'ETA n'est pas encore passée.
      */

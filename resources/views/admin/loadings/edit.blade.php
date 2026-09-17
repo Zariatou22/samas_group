@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier le chargement')
+@section('title', $isUnloading ? 'Modifier le dépotage' : 'Modifier le chargement')
 
 @section('content')
     <p>
-        <a href="{{ route('admin.loadings.index') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
+        <a href="{{ route($listRoute) }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Retour</a>
     </p>
 
     <form method="POST" action="{{ route('admin.loadings.update', $loading) }}">
@@ -17,6 +17,10 @@
                     <div class="col-md-6 form-group">
                         <label>BL</label>
                         <input type="text" class="form-control" value="{{ $loading->parentBl?->bl }}" disabled>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Validité BAD</label>
+                        <input type="date" name="bad_valid_date" class="form-control" value="{{ old('bad_valid_date', optional($loading->parentBl?->deliveryNote?->date_valid)->format('Y-m-d')) }}">
                     </div>
                     <div class="col-md-6 form-group">
                         <label>N&deg; de déclaration *</label>
