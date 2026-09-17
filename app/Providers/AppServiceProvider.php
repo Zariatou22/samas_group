@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Auth\LegacyEloquentUserProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
         Auth::provider('legacy_eloquent', function ($app, array $config) {
             return new LegacyEloquentUserProvider($app['hash'], $config['model']);
         });
+        Schema::defaultStringLength(191);
     }
 }
